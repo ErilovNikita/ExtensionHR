@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "vitaHR Модуль",
-	"version": "6.92",
+	"version": "6.95",
 	"description": "Магическая кнопка, которая упростит вашу работу",
 
 	"icons": {

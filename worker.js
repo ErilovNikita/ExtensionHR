@@ -53,6 +53,7 @@ function __init() {
 
     setTimeout(function() {
         updateStateOnSD(updSettings)
+        getHHsecrets(updSettings)
         updateTokenHHOnSD(updSettings)
     }, 2000 );
     
@@ -194,9 +195,11 @@ function processingHH(Settings, resumeURL, port = null) {
 
     port.postMessage({ "log" : "Запуск импорта резюме c HH.ru"});
     
-    // Запускаем верификацию токена HH
-    hhTOKEN(Settings, port)
-    setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
+    if (Settings.Client_id_hh && Settings.Client_secret_hh) {
+        // Запускаем верификацию токена HH
+        hhTOKEN(Settings, port)
+        setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
+    }
 }
 
 // Процесс для запуска обработки резюме Avito
