@@ -109,7 +109,7 @@ function debugLogs(text, mode, port = null) {
         }
         
         if (port) {
-            if (port == true) {
+            if (port == true && tempPort != null && tempPort != true) {
                 port = tempPort
             } else {
                 tempPort = port

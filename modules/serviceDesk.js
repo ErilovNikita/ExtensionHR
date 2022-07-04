@@ -87,9 +87,15 @@ function updateTokenHHOnSD(Settings) {
 }
 
 // Метод возвращает свежий токен Сервис Деск
-function verifServiceDeskTOKEN(SettingsData, port = null) {
+function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
     debugLogs(`Проверка токена Service Desk: ${SettingsData.ServiceDeskTOKEN}`, 'debug', port)
-    if (!SettingsData.ServiceDeskTOKEN || SettingsData.ServiceDeskTOKEN == '' || SettingsData.ServiceDeskTOKEN === undefined) {
+    if ( (
+        !SettingsData.ServiceDeskTOKEN || 
+        SettingsData.ServiceDeskTOKEN == '' || 
+        SettingsData.ServiceDeskTOKEN === undefined
+        ) ||
+        broken
+     ) {
         debugLogs('Токен Service Desk не обнаружен, запрашиваю новый', 'debug', port)
         if (SettingsData.serverLogin != '' && SettingsData.serverLogin !== undefined) {
 
@@ -108,14 +114,14 @@ function verifServiceDeskTOKEN(SettingsData, port = null) {
                 ) {
                     chrome.tabs.create({url: 'https://' + SettingsData.serverURL + '/sd/', selected: true})
                     if (SettingsData.ServiceDeskTOKEN) {
-                        verifServiceDeskTOKEN(updateSettings(), port)
+                        return verifServiceDeskTOKEN(updateSettings(), port)
                     }
                 } else {
                     if ( data.indexOf('error') != -1) {
                         return null
                     }
                     chrome.storage.local.set({"ServiceDeskTOKEN": data});
-                    console.log(data)
+                    debugLogs('Токен Service Desk успешно получен', 'debug', port)
                     updateSettings()
                     return data
                 }
@@ -130,7 +136,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null) {
                 debugLogs('Жду логин пользователя в настроках расширения 1500мс...', 'warn')
                 if (SettingsData.serverLogin != '' && SettingsData.serverLogin !== undefined) {
                     debugLogs('Пользователь ввел логин, запускаю verifServiceDeskTOKEN()', 'debug')
-                    verifServiceDeskTOKEN(updateSettings(), port)
+                    return verifServiceDeskTOKEN(updateSettings(), port)
                 } else {
                     setTimeout(checkLogin, 1500)
                 }
@@ -154,7 +160,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null) {
                     debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации', 'warn', port)
                     chrome.storage.local.remove(["ServiceDeskTOKEN"]);
                     
-                    setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port)
+                    return verifServiceDeskTOKEN(updateSettings(), port, true)
                 }
             })
 
@@ -162,7 +168,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null) {
             debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации...', 'warn', port)
             chrome.storage.local.remove(["ServiceDeskTOKEN"]);
 
-            setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port)
+            return verifServiceDeskTOKEN(updateSettings(), port, true)
         }
     }
 }
