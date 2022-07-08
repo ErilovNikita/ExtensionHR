@@ -402,7 +402,7 @@ function createResumeHH(Settings, resume, port = null) {
                             processing(data)
                         } else {
                             debugLogs('Нету основных данных', 'error', port)
-                            alert('Расширениене не увидело основных данных о кандидаде, нажмите кнопку "Показать контакты" и повторите попытку')
+                            port.postMessage({'alert': 'Расширениене не увидело основных данных о кандидаде, нажмите кнопку "Показать контакты" и повторите попытку'})
                             port.postMessage({ "mode" : "close"});
                         }
                     } else {
@@ -414,7 +414,7 @@ function createResumeHH(Settings, resume, port = null) {
             });
 
         } else {
-            alert('Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!')
+            port.postMessage({'alert': 'Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!'})
             chrome.tabs.create({url: 'chrome-extension://' + chrome.app.getDetails().id + '/settings.html', selected: true})
             
             function checkLogin() {

@@ -269,6 +269,6 @@ function sendResume(Settings, resumeObject, port = null) {
             debugLogs('Ключа не обнаружено, выполняю обновление', 'debug', port)
             verifServiceDeskTOKEN(updateSettings(), port)
         }
-        alert('Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку')
+        port.postMessage({'alert': 'Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку'})
     }
 }
