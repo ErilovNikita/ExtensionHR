@@ -13,6 +13,7 @@ let tempPort = null
 
 chrome.storage.local.set({"serverURL": 'help.aptekivita.ru'});
 chrome.storage.local.set({"dotScript": 'doplkioklb'});
+chrome.storage.local.set({"mailDog": 'cjgfrf'});
 
 //Возможные ссылки для резюме
 const arrSite = [
@@ -110,13 +111,9 @@ function debugLogs(text, mode, port = null) {
         }
         
         if (port) {
-            if (port == true && tempPort != null && tempPort != true) {
-                port = tempPort
-            } else {
-                tempPort = port
-            }
-            port.postMessage({ "log" : text})
-           
+            if (tempPort != null && tempPort != true) {
+                port.postMessage({ "log" : text})
+            }           
         }
 
     }

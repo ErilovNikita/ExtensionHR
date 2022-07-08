@@ -43,7 +43,7 @@ function updateStateOnSD(SettingsData) {
     if (SettingsData && SettingsData.ServiceDeskTOKEN && SettingsData.ServiceDeskTOKEN != '') {
 
         let login = SettingsData.serverLogin
-        loginEncoded = login.replaceAll('.', SettingsData.dotScript).replaceAll('@', 'cjgfrf')
+        loginEncoded = login.replaceAll('.', SettingsData.dotScript).replaceAll('@', Settings.mailDog)
         let url = `https://${SettingsData.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.updateExtensionState&params='${loginEncoded}','${manifest.version.replaceAll('.', SettingsData.dotScript)}'`
 
         fetch(url, { 
@@ -68,7 +68,7 @@ function updateTokenHHOnSD(Settings) {
 
     if (Settings.ServiceDeskTOKEN && Settings.ServiceDeskTOKEN != '' && Settings.hh_token && Settings.hh_token != '') {
 
-        let loginEncoded =  Settings.serverLogin.replaceAll('.', 'doplkioklb').replaceAll('@', 'cjgfrf')
+        let loginEncoded =  Settings.serverLogin.replaceAll('.', 'doplkioklb').replaceAll('@', Settings.mailDog)
         let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.updateTokenHH&params='${loginEncoded}','${Settings.hh_token}'`
 
         fetch(url, { 
@@ -175,10 +175,11 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
 
 // Метод для фиксации отправки резюме в Сервис Деск
 function resumeSended(Settings, auth = false) {
-    if (localStorage.ServiceDeskTOKEN && localStorage.ServiceDeskTOKEN != '') {
 
-        let loginEncoded = Settings.login.replaceAll('.', 'doplkioklb').replaceAll('@', 'cjgfrf')
-        let url = `https://${localStorage.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.resumeSendedExtension&params='${loginEncoded}`
+    if (Settings.ServiceDeskTOKEN && Settings.ServiceDeskTOKEN != '') {
+
+        let loginEncoded = Settings.login.replaceAll('.', Settings.dotScript).replaceAll('@', Settings.mailDog)
+        let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.resumeSendedExtension&params='${loginEncoded}`
 
         fetch(url, { 
             method: "GET"
@@ -192,11 +193,11 @@ function resumeSended(Settings, auth = false) {
                 debugLogs('resumeSended(): Ошибка авторизации в Service Desk', 'error')
                 if (auth) {
                     chrome.tabs.create({url: `https://${Settings.serverURL}/sd/`, selected: true})
-                    if (localStorage.ServiceDeskTOKEN) {
+                    if (Settings.ServiceDeskTOKEN) {
                         verifServiceDeskTOKEN(updateSettings())
                     }
                 }
-              }
+            }
         })
     }
 }
@@ -239,8 +240,12 @@ function sendResume(Settings, resumeObject, port = null) {
     
                     case 'create':
                         debugLogs(`Кандидат ${resumeObject.title} успешно создан: ${JSON.parse(data).UUID}`, 'debug', port)
-                        resumeSended()
                         resumeLink = JSON.parse(data).UUID
+                        try {
+                            resumeSended(updateSettings())
+                        } catch (e) {
+                            debugLogs(`Ошибка при выполнении resumeSended() - ${e}`, 'error', port)
+                        }
                     break;
     
                     case 'error':
