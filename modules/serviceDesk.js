@@ -90,11 +90,10 @@ function updateTokenHHOnSD(Settings) {
 function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
     debugLogs(`Проверка токена Service Desk: ${SettingsData.ServiceDeskTOKEN}`, 'debug', port)
     if ( (
-        !SettingsData.ServiceDeskTOKEN || 
-        SettingsData.ServiceDeskTOKEN == '' || 
-        SettingsData.ServiceDeskTOKEN === undefined
-        ) ||
-        broken
+            !SettingsData.ServiceDeskTOKEN || 
+            SettingsData.ServiceDeskTOKEN == '' || 
+            SettingsData.ServiceDeskTOKEN === undefined
+        ) || broken
      ) {
         debugLogs('Токен Service Desk не обнаружен, запрашиваю новый', 'debug', port)
         if (SettingsData.serverLogin != '' && SettingsData.serverLogin !== undefined) {
@@ -112,6 +111,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
                     data.indexOf('<!DOCTYPE html>') != -1 || 
                     data.indexOf('<Error in script') != -1 
                 ) {
+                    debugLogs('Получение токена заверишлось ошибкой, сеесия окончена, открываю окно авторизации', 'debug')
                     chrome.tabs.create({url: 'https://' + SettingsData.serverURL + '/sd/', selected: true})
                     if (SettingsData.ServiceDeskTOKEN) {
                         return verifServiceDeskTOKEN(updateSettings(), port)
@@ -128,8 +128,9 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
             })
     
         } else {
-            port.postMessage({'alert': 'Внимание! Расшерение не настроенно! Введите Логин от ServiceDesk для продолжения использования! Перейдите в настройки или обратитесь в службу поддержки'})
-            // alert('Внимание! Расшерение не настроенно! Введите Логин от ServiceDesk для продолжения использования! Перейдите в настройки или обратитесь в службу поддержки')
+            if (port) {
+                port.postMessage({'alert': 'Внимание! Расшерение не настроенно! Введите Логин от ServiceDesk для продолжения использования! Перейдите в настройки или обратитесь в службу поддержки'})
+            }
             chrome.tabs.create({url: `chrome-extension://${chrome.runtime.id}/settings.html`, selected: true})
             
             function checkLogin() {
@@ -234,17 +235,17 @@ function sendResume(Settings, resumeObject, port = null) {
             if (data.indexOf('resume') != -1) {
                 switch (JSON.parse(data).type) {
                     case 'update':
-                        debugLogs('Данный кандидат уже есть в базе Service Desk, его данные успешно обновлены', 'debug', port)
+                        debugLogs('Данный кандидат уже есть в базе Service Desk, его данные успешно обновлены', 'debug')
                         resumeLink = JSON.parse(data).UUID
                     break;
     
                     case 'create':
-                        debugLogs(`Кандидат ${resumeObject.title} успешно создан: ${JSON.parse(data).UUID}`, 'debug', port)
+                        debugLogs(`Кандидат ${resumeObject.title} успешно создан: ${JSON.parse(data).UUID}`, 'debug')
                         resumeLink = JSON.parse(data).UUID
                         try {
                             resumeSended(updateSettings())
                         } catch (e) {
-                            debugLogs(`Ошибка при выполнении resumeSended() - ${e}`, 'error', port)
+                            debugLogs(`Ошибка при выполнении resumeSended() - ${e}`, 'error')
                         }
                     break;
     
@@ -254,7 +255,7 @@ function sendResume(Settings, resumeObject, port = null) {
                 }
             } else {
                 if (data.indexOf('Переход не может быть выполнен: Время жизни ключа авторизации') != -1) {
-                    verifServiceDeskTOKEN(updateSettings(), port)
+                    return verifServiceDeskTOKEN(updateSettings(), port)
                 } else {
                     debugLogs('Кандидат не создан. Повторите попытку чуть позже. Ошибка SD: ' + data, 'error', port)
                 }
@@ -267,7 +268,7 @@ function sendResume(Settings, resumeObject, port = null) {
     } else {
         if (Settings.ServiceDeskTOKEN === undefined || !Settings.ServiceDeskTOKEN) {
             debugLogs('Ключа не обнаружено, выполняю обновление', 'debug', port)
-            verifServiceDeskTOKEN(updateSettings(), port)
+            return verifServiceDeskTOKEN(updateSettings(), port)
         }
         port.postMessage({'alert': 'Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку'})
     }

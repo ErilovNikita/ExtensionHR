@@ -118,7 +118,7 @@ async function getResumeOnHHpage(Settings, resumeID, port = null) {
 
     if (Settings.hh_token && Settings.hh_token != '' && Settings.hh_token !== undefined) {
         let hh_token = Settings.hh_token
-        debugLogs('Токен hh.ru - На месте', 'debug', true)
+        debugLogs('Токен hh.ru - На месте', 'debug', port)
 
         let response = await fetch(`https://api.hh.ru/resumes/${resumeID}`, { 
             method: "GET",

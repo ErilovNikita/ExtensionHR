@@ -111,9 +111,7 @@ function debugLogs(text, mode, port = null) {
         }
         
         if (port) {
-            if (tempPort != null && tempPort != true) {
-                port.postMessage({ "log" : text})
-            }           
+            port.postMessage({ "log" : text})
         }
 
     }
@@ -191,8 +189,8 @@ function processingHH(Settings, resumeURL, port = null) {
     timeOperation() 
 
     port.postMessage({ "log" : "Запуск импорта резюме c HH.ru"});
-    
-    if (Settings.Client_id_hh && Settings.Client_secret_hh) {
+        
+    if (Settings.Client_id_hh && Settings.Client_secret_hh && Settings.ServiceDeskTOKEN) {
         // Запускаем верификацию токена HH
         hhTOKEN(Settings, port)
         setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
