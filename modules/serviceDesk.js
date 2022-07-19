@@ -44,7 +44,7 @@ function updateStateOnSD(SettingsData) {
 
         let login = SettingsData.serverLogin
         loginEncoded = login.replaceAll('.', SettingsData.dotScript).replaceAll('@', Settings.mailDog)
-        let url = `https://${SettingsData.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.updateExtensionState&params='${loginEncoded}','${manifest.version.replaceAll('.', SettingsData.dotScript)}'`
+        let url = `https://${SettingsData.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.updateExtensionState&params='${loginEncoded}','${manifest.version.replaceAll('.', SettingsData.dotScript)}',${Settings.hh_token}`
 
         fetch(url, { 
             method: "GET" 
