@@ -38,9 +38,7 @@ function genHHToken(port = null) {
 
                 // На основе входящих данных получаем дату смерти токена 
                 var deadLineToken = new Date()
-                deadLineToken.setSeconds(
-                    deadLineToken.getSeconds() + data.expires_in
-                )
+                deadLineToken.setSeconds( deadLineToken.getSeconds() + data.expires_in )
                 
                 // Записываем все данные в память
                 chrome.storage.local.set({
@@ -68,14 +66,18 @@ function hhTOKEN(Settings, port = null) {
             return Settings.hh_token
         } else {
             debugLogs('Найден токен HH с истекшим сроком давности, жду 1000мс и повоторяю попытку', 'debug')
-            chrome.storage.local.remove(["hh_token"])
+            chrome.storage.local.remove([
+                "hh_token",
+                "hh_authorization_code",
+                "hh_token_deadline",
+                "hh_refresh_token"
+            ])
             setTimeout(hhTOKEN, 1000, updateSettings(), port)
         }
     } else {
         debugLogs('Токен HH не найден, проверка ключей для создания', 'debug')
     
         // Запускаем метод генирации Authorization code
-        chrome.storage.local.remove(["hh_authorization_code"])
         getAuthCode(updateSettings(), true)
 
         function awaitAuthCode(updSettings) {
