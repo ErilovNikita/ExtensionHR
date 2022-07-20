@@ -8,12 +8,14 @@ const debugON = true
 const checkNameOnResume = false
 const manifest = chrome.runtime.getManifest();
 let stopTimer = false
-let Settings = {};
-let tempPort = null
+let Settings = {}
 
-chrome.storage.local.set({"serverURL": 'help.aptekivita.ru'});
-chrome.storage.local.set({"dotScript": 'doplkioklb'});
-chrome.storage.local.set({"mailDog": 'cjgfrf'});
+// Заполним дефолтные настройки
+chrome.storage.local.set({
+    "serverURL": 'help.aptekivita.ru',
+    "dotScript": 'doplkioklb',
+    "mailDog": 'cjgfrf'
+});
 
 //Возможные ссылки для резюме
 const arrSite = [
@@ -64,7 +66,7 @@ function __init() {
 
 // Обновление переменной настроек из памяти
 function updateSettings() {
-    var initSettings = getAllStorageData().then(items => {
+    getAllStorageData().then(items => {
         Object.assign(Settings, items);
     });
     return Settings
