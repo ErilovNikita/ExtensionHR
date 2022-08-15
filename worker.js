@@ -344,7 +344,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                             processingSD(Settings, tabs[0].url, port)
 
                         } else {
-                            port.postMessage({ "mode" : "close"});
+                            // port.postMessage({ "mode" : "close"});
                             port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
                         }
                     }  else if (tabs[0].url.indexOf(arrSite[3]) != -1 ) { // Обновление резюме из SuperJob
@@ -352,7 +352,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                             // Запускаем процесс обработки резюме
                             processingSJ(Settings, tabs[0].url, port)
                         } else {
-                            port.postMessage({ "mode" : "close"});
+                            // port.postMessage({ "mode" : "close"});
                             port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
                         }
                     } else {
