@@ -45,6 +45,9 @@ importScripts('./modules/hh.js');
 // Модуль функций для Avito.ru
 importScripts('./modules/avito.js');
 
+// Модуль функций для SuperJob.ru
+importScripts('./modules/superjob.js');
+
 
 /* 
     --------- Методы ---------
