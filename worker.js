@@ -28,7 +28,8 @@ const arrSite = [
         "/sd/operator/#uuid:",
         "candidate",
         "resume"
-    ]
+    ],
+    "superjob.ru/resume"
 ]
 
 /* 
@@ -199,6 +200,30 @@ function processingHH(Settings, resumeURL, port = null) {
     }
 }
 
+// Процесс для запуска обработки резюме Super Job
+function processingSJ(Settings, resumeURL, port = null) {
+
+    // Находим уникальный ID резюме
+    let resumeID = resumeURL.substr(resumeURL.indexOf('/resume/') + 8)
+    if (resumeID.indexOf('html') != -1) {
+        resumeID = resumeID.substr(0, resumeID.indexOf('.html'))
+    }
+
+    // Запускаем верификацию токена Сервис Деск
+    verifServiceDeskTOKEN(Settings, port)
+
+    // Начинаю отсчет времени
+    timeOperation() 
+
+    port.postMessage({ "log" : "Запуск импорта резюме c SuperJob.ru"});
+        
+    if (Settings.Client_id_hh && Settings.Client_secret_hh && Settings.ServiceDeskTOKEN) {
+        // Запускаем верификацию токена SJ
+        //hhTOKEN(Settings, port)
+        //setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
+    }
+}
+
 // Процесс для запуска обработки резюме Avito
 function processingAvito(Settings, resumeURL, port) {
 
@@ -322,9 +347,16 @@ chrome.runtime.onConnect.addListener(function(port) {
                             port.postMessage({ "mode" : "close"});
                             port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
                         }
+                    }  else if (tabs[0].url.indexOf(arrSite[3]) != -1 ) { // Обновление резюме из SuperJob
+                        if (tabs[0].url.indexOf('search_resume') == -1) {
+                            // Запускаем процесс обработки резюме
+                            processingSJ(Settings, tabs[0].url, port)
+                        } else {
+                            port.postMessage({ "mode" : "close"});
+                            port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
+                        }
                     } else {
                         port.postMessage({ "log" : 'К сожалению данный сайт еще не поддерживается функцией автоматического импорта кандидатов!'})
-                        //setTimeout(() => port.postMessage({ "mode" : "close"}), 3000);
                     }
                 });
             break;
