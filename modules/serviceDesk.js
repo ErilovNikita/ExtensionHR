@@ -21,6 +21,29 @@ function getHHsecrets(Settings) {
     })
 }
 
+// Метод для получения секретов HH из Сервис Деска
+function getSJsecrets(Settings) {
+    let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.getSJsecrets&params=`
+    
+    fetch(url, { 
+        method: "GET" 
+    })
+    .then((response) => response.text())
+    .then((data) => {
+        if (
+            data != '' && 
+            data.indexOf('<!DOCTYPE html>') == -1
+        ) {
+            dataJSON = JSON.parse(data)
+            chrome.storage.local.set({
+                "Client_secret_sj": dataJSON.Client_secret_sj,
+                "Client_id_sj": dataJSON.Client_id_sj
+            });
+            updateSettings()
+        }
+    })
+}
+
 // Метод для получения ФИО из Сервис Деска
 function getNameEmpl(Settings) {
     if ( Settings.serverLogin ) {
