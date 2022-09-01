@@ -98,21 +98,6 @@ function hhTOKEN(Settings, port = null) {
     }
 }
 
-// Метод для проверки резюме по собственной базе
-function findApplicantByID(Settings, id, callback) {
-    debugLogs('Запрашиваю данные о соискателе в собственной базе...', 'debug')
-
-    fetch(`https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.findApplicantByID&params='${id}'`, { 
-        method: "GET" 
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        debugLogs(data, 'JSON');
-        callback(data)
-    })
-
-}
-
 // Метод для получения резюме
 async function getResumeOnHHpage(Settings, resumeID, port = null) {
     // Обьявляем переменную для хранения резюме

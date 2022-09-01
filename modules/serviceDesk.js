@@ -300,3 +300,18 @@ function sendResume(Settings, resumeObject, port = null) {
         port.postMessage({'alert': 'Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку'})
     }
 }
+
+// Метод для проверки резюме по собственной базе
+function findApplicantByID(Settings, id, callback) {
+    debugLogs('Запрашиваю данные о соискателе в собственной базе...', 'debug')
+
+    fetch(`https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.findApplicantByID&params='${id}'`, { 
+        method: "GET" 
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        debugLogs(data, 'JSON');
+        callback(data)
+    })
+
+}
