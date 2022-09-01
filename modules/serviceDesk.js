@@ -115,7 +115,7 @@ function updateTokenHHOnSD(Settings) {
 
 // Метод возвращает свежий токен Сервис Деск
 function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
-    debugLogs(`Проверка токена Service Desk: ${SettingsData.ServiceDeskTOKEN}`, 'debug', port)
+    debugLogs(`Проверка токена Service Desk`, 'debug', port)
     if ( (
             !SettingsData.ServiceDeskTOKEN || 
             SettingsData.ServiceDeskTOKEN == '' || 
@@ -173,7 +173,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
         }
     } else {
         if (SettingsData.ServiceDeskTOKEN.indexOf('<!DOCTYPE html>') == -1 ) {
-            debugLogs('Токен Service Desk уже существует, проверка на сервере', 'debug', port)
+            debugLogs(`Токен Service Desk уже существует, проверка на сервере (${SettingsData.ServiceDeskTOKEN})`, 'debug', port)
 
             let url = `https://${SettingsData.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.verification&params='${SettingsData.ServiceDeskTOKEN}'`
             fetch(url, { 

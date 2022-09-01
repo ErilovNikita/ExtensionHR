@@ -116,7 +116,8 @@ function debugLogs(text, mode, port = null) {
             break;
         }
         
-        if (port) {
+        if (port && port.name == 'mainPopup') {
+            // console.log(port)
             port.postMessage({ "log" : text})
         }
 
