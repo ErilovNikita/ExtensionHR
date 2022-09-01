@@ -160,7 +160,6 @@ function createResumeSJ(Settings, resume, port = null) {
                 if (value.length > 0) {
 
                     for (comment of value) {
-                        console.log (comment)
                         let obj = {
                             "author" : comment.author, 
                             "created_at" : new Date(comment.date * 1000).toISOString(), 
@@ -202,39 +201,43 @@ function createResumeSJ(Settings, resume, port = null) {
             }
             function experience_list(value) { // Список прошлых мест работы
                 if (value && value !== undefined && value != []) {
-                let experience_list = []
-                for (let index = 0; index < value.length; index++) {
-                    let body = {
-                    'metaClass' :'orgResume$experience',
-                    'title': value[index].company,
-                    'position': value[index].position,
-                    'responsibiliti': value[index].description,
-                    "startWork": value[index].start,
-                    "finishWork": value[index].end
-                    };
-                    experience_list.push(body)
-                }
-                return experience_list
+                    let experience_list = []
+                    for (let index = 0; index < value.length; index++) {
+                        let body = {
+                            'metaClass' :'orgResume$experience',
+                            'title': value[index].name,
+                            'position': value[index].profession,
+                            'responsibiliti': value[index].achievements,
+                            "startWork": value[index].yearbeg + '-' + value[index].monthbeg + '-01',
+                            "finishWork": null,
+                        };
+
+                        if (value[index].yearbeg && value[index].monthbeg) {
+                            body["finishWork"] = value[index].yearend + '-' + value[index].monthend + '-01'
+                        }
+
+                        experience_list.push(body)
+                    }
+                    return experience_list
                 } else {
-                return []
+                    return []
                 }
             }
             function additional_list(value) { // Список повышений квалификации, курсов
                 if (value && value !== undefined && value != []) {
-                let additional_list = []
-                for (let index = 0; index < value.length; index++) {
-                    let body = {
-                    'metaClass' :'orgResume$additional',
-                    'year': value[index].year,
-                    'title': value[index].name,
-                    'type': value[index].result,
-                    'company' : value[index].organization
-                    };
-                    additional_list.push(body)
-                }
-                return additional_list
+                    let additional_list = []
+                    for (let index = 0; index < value.length; index++) {
+                        let body = {
+                            'metaClass' :'orgResume$additional',
+                            'year': value[index].yearend,
+                            'title': value[index].name,
+                            'company' : value[index].institute
+                        };
+                        additional_list.push(body)
+                    }
+                    return additional_list
                 } else {
-                return []
+                    return []
                 }
             }
 
@@ -244,7 +247,6 @@ function createResumeSJ(Settings, resume, port = null) {
                 let processingCreatedHHResume = new Promise((resolve) => {
 
                     let phone
-                    let email
                     let ageApplicant
                     let applicant = null
 
@@ -279,7 +281,6 @@ function createResumeSJ(Settings, resume, port = null) {
 
                     }
 
-                    
                     let body = {
                         'metaClass' : 'resume$resume',
                         'applicant': applicant,
@@ -296,8 +297,8 @@ function createResumeSJ(Settings, resume, port = null) {
                         'email' : null,
                         'salary' : salary(resume.payment, resume.currency),
                         'education_list' : education_list(resume.base_education_history),
-                        'experience_list' : [], //experience_list(resume.experience),
-                        'additional_list' : [], //(resume.education.additional),
+                        'experience_list' : experience_list(resume.work_history),
+                        'additional_list' : additional_list(resume.education_history),
                         'moving': resume.moveable ? 'Готов к переезду' : 'Не готов к переезду',
                         'experience': resume.experience_text,
                         'education' : resume.education.title + ' образование',
