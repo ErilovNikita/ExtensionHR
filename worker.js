@@ -237,6 +237,23 @@ function processingSJ(Settings, resumeURL, port = null) {
     }
 }
 
+// Процесс для запуска обработки резюме Хабр Карьера
+function processingHabr(Settings, resumeURL, port = null) {
+
+    // Находим уникальный ID резюме
+    resumeID = resumeURL.split('/')
+    resumeID = resumeID[resumeID.length - 1]
+
+    // Запускаем верификацию токена Сервис Деск
+    verifServiceDeskTOKEN(Settings, port)
+
+    // Начинаю отсчет времени
+    timeOperation() 
+
+    port.postMessage({ "log" : "Запуск импорта резюме c Хабр Карьера"});
+
+}
+
 // Процесс для запуска обработки резюме Avito
 function processingAvito(Settings, resumeURL, port) {
 
