@@ -29,7 +29,8 @@ const arrSite = [
         "candidate",
         "resume"
     ],
-    "superjob.ru/resume"
+    "superjob.ru/resume",
+    "career.habr.com/"
 ]
 
 /* 
