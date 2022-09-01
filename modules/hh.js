@@ -299,10 +299,13 @@ function createResumeHH(Settings, resume, port = null) {
 
                     if (data.type == 'found') {
                         name = data.name // ФИО
-                        phone = data.phone_number // Номер
                         email = data.email // E-Mail
                         ageApplicant = parseInt(data.age) // Возраст
                         applicant = data.UUID
+
+                        if (data.phone_number != null && data.phone_number != 'null') {
+                            phone = data.phone_number // Номер
+                        }
                     } else { // Если данных о соискателе не найдено в базе
                         // ФИО
 
