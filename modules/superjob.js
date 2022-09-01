@@ -308,7 +308,7 @@ function createResumeSJ(Settings, resume, port = null) {
                         'system_icon' : 'superjob',
                         'HR_id' : resume.id,
                         'comments' : comments(resume.comments),
-                        'author' : null
+                        'author' : Settings.serverLogin
                     }
 
                     if (resume.photo != null) { // Фотография
