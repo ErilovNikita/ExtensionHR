@@ -180,6 +180,8 @@ function renderBadge(activeTab) {
                 setBadge(tab.id, 'SD', '#01aaff')
             } else if ( tab.url.indexOf(arrSite[3]) != -1 ){ // SuperJob Resume
                 setBadge(tab.id, 'SJ', '#00aa87')
+            } else if ( tab.url.indexOf(arrSite[4]) != -1 ){ // SuperJob Resume
+                setBadge(tab.id, 'Habr', '#303b44')
             } else {
                 setBadge(tab.id, '', '#F00')
             }
