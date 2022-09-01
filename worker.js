@@ -252,6 +252,12 @@ function processingHabr(Settings, resumeURL, port = null) {
 
     port.postMessage({ "log" : "Запуск импорта резюме c Хабр Карьера"});
 
+    if (Settings.Client_id_habr && Settings.Client_secret_habr && Settings.ServiceDeskTOKEN) {
+        // Запускаем верификацию токена SJ
+        habrTOKEN(Settings, port)
+        //setTimeout(getResumeOnSJpage, 1000, Settings, resumeID, port)
+    }
+
 }
 
 // Процесс для запуска обработки резюме Avito
