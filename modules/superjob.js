@@ -212,7 +212,7 @@ function createResumeSJ(Settings, resume, port = null) {
                             "finishWork": null,
                         };
 
-                        if (value[index].yearbeg && value[index].monthbeg) {
+                        if (value[index].yearend && value[index].monthend) {
                             body["finishWork"] = value[index].yearend + '-' + value[index].monthend + '-01'
                         }
 
