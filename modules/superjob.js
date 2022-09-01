@@ -262,17 +262,17 @@ function createResumeSJ(Settings, resume, port = null) {
                     } else { // Если данных о соискателе не найдено в базе
                         // Номер
                         if (checkNameOnResume) {
-                            phone = resume.contact[0].value.formatted
+                            phone = resume.phone1
                             phone = phone.replace(/[.,\/#!$%\^&\*;:{}=\-+_`~() ]/g,"")
                             if (phone.substr(0, 1) == '7') {
                                 phone = '8' + phone.substr(1, phone.length)
                             }
                         } else {
                             try {
-                                phone = resume.contact[0].value.formatted
+                                phone = resume.phone1
                                 phone = phone.replace(/[.,\/#!$%\^&\*;:{}=\-+_`~() ]/g,"")
                                 if (phone.substr(0, 1) == '7') {
-                                phone = '8' + phone.substr(1, phone.length)
+                                    phone = '8' + phone.substr(1, phone.length)
                                 }
                             } catch (e) {
                                 debugLogs('Телефонного номера не обнаружено', 'error', port)
@@ -291,7 +291,7 @@ function createResumeSJ(Settings, resume, port = null) {
                         'trip' : resume.business_trip.title,
                         'nationality': resume.citizenship.title,
                         'schedule' : resume.type_of_work.title + ' занятость',
-                        'phone' : null,
+                        'phone' : phone,
                         'birthday' : resume.birthyear + '-' + resume.birthmonth + '-' + resume.birthday,
                         'skills' : null,
                         'email' : null,
