@@ -48,6 +48,9 @@ importScripts('./modules/avito.js');
 // Модуль функций для SuperJob.ru
 importScripts('./modules/superjob.js');
 
+// Модуль функций для career.habr.com
+importScripts('./modules/habr.js');
+
 
 /* 
     --------- Методы ---------
