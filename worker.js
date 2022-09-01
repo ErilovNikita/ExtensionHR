@@ -174,6 +174,8 @@ function renderBadge(activeTab) {
                 setBadge(tab.id, 'Avito', '#01aaff')
             } else if ( tab.url.indexOf(arrSite[2][0]) != -1 && ( tab.url.indexOf(arrSite[2][1]) != -1 || tab.url.indexOf(arrSite[2][2]) != -1) ){ // Avito Resume
                 setBadge(tab.id, 'SD', '#01aaff')
+            } else if ( tab.url.indexOf(arrSite[3]) != -1 ){ // SuperJob Resume
+                setBadge(tab.id, 'SJ', '#00aa87')
             } else {
                 setBadge(tab.id, '', '#F00')
             }
