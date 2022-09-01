@@ -25,14 +25,18 @@ function enabledButtonsViews() {
 	let buttonIDArray = [
 		'startUpdateKeysAvito',
 		'startUpdateKeysHH',
+		'startUpdateKeysSJ',
 		'removeSDKeys'
 	]
 
 	if (Settings.hh_token || (Settings.Client_secret_hh && Settings.Client_id_hh)) {
 		document.getElementById(buttonIDArray[1]).disabled = false;
 	}
-	if (Settings.ServiceDeskTOKEN) {
+	if (Settings.sj_token || (Settings.Client_secret_sj && Settings.Client_id_sj)) {
 		document.getElementById(buttonIDArray[2]).disabled = false;
+	}
+	if (Settings.ServiceDeskTOKEN) {
+		document.getElementById(buttonIDArray[3]).disabled = false;
 	}
 }
 
@@ -85,6 +89,10 @@ window.onload = function () {
 				// Get HH Secrets
 				if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
 					port.postMessage("getHHsecrets");
+				}
+				// Get HH Secrets
+				if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
+					port.postMessage("getSJsecrets");
 				}
 			} else {
 				if (countConnect > 5) {
@@ -211,6 +219,18 @@ window.onload = function () {
 
 		document.location.reload()
 		window.open('https://hh.ru/oauth/authorize?response_type=code&client_id=' + Settings.Client_id_hh, '_blank').focus();
+	}
+
+	// startUpdateKeysSJ
+	document.getElementById( "startUpdateKeysSJ" ).onclick = function(event) {
+		document.getElementById("startUpdateKeysSJ").disabled = true;
+		setTimeout(function() { document.getElementById("startUpdateKeysSJ").disabled = false; }, 1000);
+
+		chrome.storage.local.remove(['sj_authorization_code', 'sj_token', 'sj_token_deadline']);
+		updateSettings()
+
+		document.location.reload()
+		window.open(`https://www.superjob.ru/authorize?client_id=${Settings.Client_id_sj}&redirect_uri=${encodeURIComponent('https://zima.superjob.ru/clients/apteki-vita-2210879.html')}`, '_blank').focus();
 	}
 
 	// removeSDKeys

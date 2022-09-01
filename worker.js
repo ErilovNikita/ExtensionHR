@@ -28,7 +28,8 @@ const arrSite = [
         "/sd/operator/#uuid:",
         "candidate",
         "resume"
-    ]
+    ],
+    "superjob.ru/resume"
 ]
 
 /* 
@@ -43,6 +44,9 @@ importScripts('./modules/hh.js');
 
 // Модуль функций для Avito.ru
 importScripts('./modules/avito.js');
+
+// Модуль функций для SuperJob.ru
+importScripts('./modules/superjob.js');
 
 
 /* 
@@ -112,8 +116,10 @@ function debugLogs(text, mode, port = null) {
             break;
         }
         
-        if (port) {
-            port.postMessage({ "log" : text})
+        if (port && port.name == 'mainPopup') {
+            try {
+                port.postMessage({ "log" : text})
+            } catch (e) {}
         }
 
     }
@@ -168,6 +174,8 @@ function renderBadge(activeTab) {
                 setBadge(tab.id, 'Avito', '#01aaff')
             } else if ( tab.url.indexOf(arrSite[2][0]) != -1 && ( tab.url.indexOf(arrSite[2][1]) != -1 || tab.url.indexOf(arrSite[2][2]) != -1) ){ // Avito Resume
                 setBadge(tab.id, 'SD', '#01aaff')
+            } else if ( tab.url.indexOf(arrSite[3]) != -1 ){ // SuperJob Resume
+                setBadge(tab.id, 'SJ', '#00aa87')
             } else {
                 setBadge(tab.id, '', '#F00')
             }
@@ -196,6 +204,30 @@ function processingHH(Settings, resumeURL, port = null) {
         // Запускаем верификацию токена HH
         hhTOKEN(Settings, port)
         setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
+    }
+}
+
+// Процесс для запуска обработки резюме Super Job
+function processingSJ(Settings, resumeURL, port = null) {
+
+    // Находим уникальный ID резюме
+    resumeID = resumeURL.substr(resumeURL.indexOf('/resume/') + 8)
+    resumeID = resumeID.substr(0, resumeID.indexOf('.html'))
+    resumeID = resumeID.split('-')
+    resumeID = resumeID[resumeID.length - 1]
+
+    // Запускаем верификацию токена Сервис Деск
+    verifServiceDeskTOKEN(Settings, port)
+
+    // Начинаю отсчет времени
+    timeOperation() 
+
+    port.postMessage({ "log" : "Запуск импорта резюме c SuperJob.ru"});
+        
+    if (Settings.Client_id_sj && Settings.Client_secret_sj && Settings.ServiceDeskTOKEN) {
+        // Запускаем верификацию токена SJ
+        sjTOKEN(Settings, port)
+        setTimeout(getResumeOnSJpage, 1000, Settings, resumeID, port)
     }
 }
 
@@ -275,10 +307,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('genAvitoToken')
     } else {
         if (message.hh_authorization_code ) {
-            chrome.storage.local.set({"hh_authorization_code": message.hh_authorization_code});
-            debugLogs(`Получен новый hh_authorization_code: ${message.hh_authorization_code}`)
-            //updSettings = updateSettings()
-            //setTimeout(hhTOKEN, 1000, updSettings)
+            chrome.storage.local.set({"hh_authorization_code": message.hh_authorization_code})
+            debugLogs(`Получен новый hh_authorization_code: ${message.hh_authorization_code}`, 'debug')
+        } else if (message.sj_authorization_code ) {
+            chrome.storage.local.set({"sj_authorization_code": message.sj_authorization_code})
+            debugLogs(`Получен новый sj_authorization_code: ${message.sj_authorization_code}`, 'debug')
         } else {
             if (message.updateResume) {
                 console.log('Обновление')
@@ -319,12 +352,19 @@ chrome.runtime.onConnect.addListener(function(port) {
                             processingSD(Settings, tabs[0].url, port)
 
                         } else {
-                            port.postMessage({ "mode" : "close"});
+                            // port.postMessage({ "mode" : "close"});
+                            port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
+                        }
+                    }  else if (tabs[0].url.indexOf(arrSite[3]) != -1 ) { // Обновление резюме из SuperJob
+                        if (tabs[0].url.indexOf('search_resume') == -1) {
+                            // Запускаем процесс обработки резюме
+                            processingSJ(Settings, tabs[0].url, port)
+                        } else {
+                            // port.postMessage({ "mode" : "close"});
                             port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
                         }
                     } else {
                         port.postMessage({ "log" : 'К сожалению данный сайт еще не поддерживается функцией автоматического импорта кандидатов!'})
-                        //setTimeout(() => port.postMessage({ "mode" : "close"}), 3000);
                     }
                 });
             break;
@@ -339,6 +379,12 @@ chrome.runtime.onConnect.addListener(function(port) {
                 debugLogs('Ветка получения ключей от HH.ru', 'debug')
                 verifServiceDeskTOKEN(updateSettings())
                 getHHsecrets(updateSettings())
+            break;
+
+            case 'getSJsecrets':
+                debugLogs('Ветка получения ключей от SuperJob.ru', 'debug')
+                verifServiceDeskTOKEN(updateSettings())
+                getSJsecrets(updateSettings())
             break;
 
             default:

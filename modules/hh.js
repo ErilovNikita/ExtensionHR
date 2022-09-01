@@ -1,5 +1,5 @@
 // Метод для получения Auth кода HH
-function getAuthCode(Settings, notValid = false) {
+function getAuthCodeHH(Settings, notValid = false) {
     let hhClientID = Settings.Client_id_hh
 
     if (
@@ -78,7 +78,7 @@ function hhTOKEN(Settings, port = null) {
         debugLogs('Токен HH не найден, проверка ключей для создания', 'debug')
     
         // Запускаем метод генирации Authorization code
-        getAuthCode(updateSettings(), true)
+        getAuthCodeHH(updateSettings(), true)
 
         function awaitAuthCode(updSettings) {
             if (
@@ -96,21 +96,6 @@ function hhTOKEN(Settings, port = null) {
         awaitAuthCode(updateSettings())
 
     }
-}
-
-// Метод для проверки резюме по собственной базе
-function findApplicantByID(Settings, id, callback) {
-    debugLogs('Запрашиваю данные о соискателе в собственной базе...', 'debug')
-
-    fetch(`https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.findApplicantByID&params='${id}'`, { 
-        method: "GET" 
-    })
-    .then((response) => response.json())
-    .then((data) => {
-        debugLogs(data, 'JSON');
-        callback(data)
-    })
-
 }
 
 // Метод для получения резюме
@@ -299,10 +284,13 @@ function createResumeHH(Settings, resume, port = null) {
 
                     if (data.type == 'found') {
                         name = data.name // ФИО
-                        phone = data.phone_number // Номер
                         email = data.email // E-Mail
                         ageApplicant = parseInt(data.age) // Возраст
                         applicant = data.UUID
+
+                        if (data.phone_number != null && data.phone_number != 'null') {
+                            phone = data.phone_number // Номер
+                        }
                     } else { // Если данных о соискателе не найдено в базе
                         // ФИО
 

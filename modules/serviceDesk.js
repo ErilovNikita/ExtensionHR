@@ -21,6 +21,29 @@ function getHHsecrets(Settings) {
     })
 }
 
+// Метод для получения секретов SJ из Сервис Деска
+function getSJsecrets(Settings) {
+    let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.getSJsecrets&params=`
+    
+    fetch(url, { 
+        method: "GET" 
+    })
+    .then((response) => response.text())
+    .then((data) => {
+        if (
+            data != '' && 
+            data.indexOf('<!DOCTYPE html>') == -1
+        ) {
+            dataJSON = JSON.parse(data)
+            chrome.storage.local.set({
+                "Client_secret_sj": dataJSON.Client_secret_sj,
+                "Client_id_sj": dataJSON.Client_id_sj
+            });
+            updateSettings()
+        }
+    })
+}
+
 // Метод для получения ФИО из Сервис Деска
 function getNameEmpl(Settings) {
     if ( Settings.serverLogin ) {
@@ -92,7 +115,7 @@ function updateTokenHHOnSD(Settings) {
 
 // Метод возвращает свежий токен Сервис Деск
 function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
-    debugLogs(`Проверка токена Service Desk: ${SettingsData.ServiceDeskTOKEN}`, 'debug', port)
+    debugLogs(`Проверка токена Service Desk`, 'debug', port)
     if ( (
             !SettingsData.ServiceDeskTOKEN || 
             SettingsData.ServiceDeskTOKEN == '' || 
@@ -150,7 +173,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
         }
     } else {
         if (SettingsData.ServiceDeskTOKEN.indexOf('<!DOCTYPE html>') == -1 ) {
-            debugLogs('Токен Service Desk уже существует, проверка на сервере', 'debug', port)
+            debugLogs(`Токен Service Desk уже существует, проверка на сервере (${SettingsData.ServiceDeskTOKEN})`, 'debug', port)
 
             let url = `https://${SettingsData.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.verification&params='${SettingsData.ServiceDeskTOKEN}'`
             fetch(url, { 
@@ -276,4 +299,19 @@ function sendResume(Settings, resumeObject, port = null) {
         }
         port.postMessage({'alert': 'Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку'})
     }
+}
+
+// Метод для проверки резюме по собственной базе
+function findApplicantByID(Settings, id, callback) {
+    debugLogs('Запрашиваю данные о соискателе в собственной базе...', 'debug')
+
+    fetch(`https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.findApplicantByID&params='${id}'`, { 
+        method: "GET" 
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        debugLogs(data, 'JSON');
+        callback(data)
+    })
+
 }
