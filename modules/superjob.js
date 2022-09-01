@@ -97,3 +97,51 @@ function getAuthCodeSJ(Settings, notValid = false) {
     }
   
 }
+
+// Метод для получения резюме
+async function getResumeOnSJpage(Settings, resumeID, port = null) {
+    // Обьявляем переменную для хранения резюме
+    let resume = null
+
+    if (Settings.sj_token && Settings.sj_token != '' && Settings.sj_token !== undefined) {
+        let sj_token = Settings.sj_token
+        debugLogs('Токен SuperJob.ru - На месте', 'debug', port)
+
+        let response = await fetch(`https://api.superjob.ru/2.0/resumes/${resumeID}`, { 
+            method: "GET",
+            headers: {
+                "Authorization"     : `Bearer ${sj_token}`,
+                "X-Api-App-Id"      : Settings.Client_secret_sj
+            }
+        })
+
+        if ( response.status == 403 ) {
+            resp = JSON.parse(data.response)
+        
+            // Обработка ошибки token_revoked
+            if (resp.errors[0].type == 'oauth' && resp.errors[0].value == 'token_revoked') {
+                debugLogs('Обнаружена ошибка ключа SuperJob, попытка исправить', 'debug', port) 
+                chrome.storage.local.remove([
+                    "sj_authorization_code",
+                    "sj_token",
+                    "sj_token_deadline"
+                ])
+                updateSettings()
+                let redirectURL = encodeURIComponent('https://zima.superjob.ru/clients/apteki-vita-2210879.html')
+                chrome.tabs.create({url: `https://www.superjob.ru/authorize?client_id=${sjClientID}&redirect_uri=${redirectURL}`, selected: true})
+            }  else {
+                debugLogs(`<b>При обращении к SuperJob, возникла неизвестная ошибка! <br><em>${resp.errors[0].type}: </b>${resp.errors[0].value}</em><br>Обратитесь в Сервис Деск, для решения`, 'error', port)
+            }
+        } else {
+            resume = await response.json();
+            debugLogs(resume, 'JSON')
+        }
+        
+        // Формируем резюме
+        createResumeSJ(Settings, resume, port)
+  
+    } else {
+        debugLogs('Токен HH не найден, ожидание hhTOKEN() 1500мс...', 'warn')
+        setTimeout(getResumeOnHHpage, 1500, updateSettings(), resumeID, port)
+    }
+}

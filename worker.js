@@ -209,10 +209,10 @@ function processingHH(Settings, resumeURL, port = null) {
 function processingSJ(Settings, resumeURL, port = null) {
 
     // Находим уникальный ID резюме
-    let resumeID = resumeURL.substr(resumeURL.indexOf('/resume/') + 8)
-    if (resumeID.indexOf('html') != -1) {
-        resumeID = resumeID.substr(0, resumeID.indexOf('.html'))
-    }
+    resumeID = resumeURL.substr(resumeURL.indexOf('/resume/') + 8)
+    resumeID = resumeID.substr(0, resumeID.indexOf('.html'))
+    resumeID = resumeID.split('-')
+    resumeID = resumeID[resumeID.length - 1]
 
     // Запускаем верификацию токена Сервис Деск
     verifServiceDeskTOKEN(Settings, port)
@@ -225,7 +225,7 @@ function processingSJ(Settings, resumeURL, port = null) {
     if (Settings.Client_id_sj && Settings.Client_secret_sj && Settings.ServiceDeskTOKEN) {
         // Запускаем верификацию токена SJ
         sjTOKEN(Settings, port)
-        //setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
+        setTimeout(getResumeOnSJpage, 1000, Settings, resumeID, port)
     }
 }
 
