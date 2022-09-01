@@ -312,8 +312,8 @@ function createResumeSJ(Settings, resume, port = null) {
                     }
 
                     if (resume.photo != null) { // Фотография
-                        if (resume.photo.medium && resume.photo.medium != '' && resume.photo.medium !== undefined) {
-                            toDataURL(resume.photo.medium).then(dataUrl => {
+                        if (resume.photo_sizes.medium && resume.photo_sizes.medium != '' && resume.photo_sizes.medium !== undefined) {
+                            toDataURL(resume.photo_sizes.medium).then(dataUrl => {
                                 body.photo = dataUrl
                             })
                         } else {
