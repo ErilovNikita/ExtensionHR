@@ -171,29 +171,6 @@ function createResumeSJ(Settings, resume, port = null) {
                 }
                 return arrComments
             }
-            function experience(value) { // Рабочий стаж (Строка)
-                if (value != null) {
-                function getWords(monthCount) {
-                    function getPlural(number, word) {
-                        return number === 1 && word.one || word.other;
-                    }
-
-                    var months = { one: 'месяц', other: 'месяцев' },
-                        years = { one: 'год', other: 'лет' },
-                        m = monthCount % 12,
-                        y = Math.floor(monthCount / 12),
-                        result = [];
-
-                    y && result.push(y + ' ' + getPlural(y, years));
-                    m && result.push(m + ' ' + getPlural(m, months));
-                    return result.join(' и ');
-                }
-                return getWords(value.months)
-
-                } else {
-                return 'Не указан'
-                }
-            }
             function salary(payment, currency) {// Зарплата (Строка)
                 let result = ''
                 if (payment != null) {
@@ -322,7 +299,7 @@ function createResumeSJ(Settings, resume, port = null) {
                         'experience_list' : [], //experience_list(resume.experience),
                         'additional_list' : [], //(resume.education.additional),
                         'moving': resume.moveable ? 'Готов к переезду' : 'Не готов к переезду',
-                        'experience': experience(resume.experience_month_count),
+                        'experience': resume.experience_text,
                         'education' : resume.education.title + ' образование',
                         'sex' : resume.gender?.title ? resume.gender?.title : null,
                         'link' : '<a href="' + resume.link + '">SuperJob.ru</a>',
