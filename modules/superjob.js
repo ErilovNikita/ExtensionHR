@@ -294,7 +294,7 @@ function createResumeSJ(Settings, resume, port = null) {
                         'phone' : phone,
                         'birthday' : resume.birthyear + '-' + resume.birthmonth + '-' + resume.birthday,
                         'skills' : null,
-                        'email' : null,
+                        'email' : resume.email !== undefined ? resume.email : null,
                         'salary' : salary(resume.payment, resume.currency),
                         'education_list' : education_list(resume.base_education_history),
                         'experience_list' : experience_list(resume.work_history),
