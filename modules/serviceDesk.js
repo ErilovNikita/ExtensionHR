@@ -21,7 +21,7 @@ function getHHsecrets(Settings) {
     })
 }
 
-// Метод для получения секретов HH из Сервис Деска
+// Метод для получения секретов SJ из Сервис Деска
 function getSJsecrets(Settings) {
     let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.getSJsecrets&params=`
     

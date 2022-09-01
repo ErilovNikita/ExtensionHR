@@ -86,6 +86,10 @@ window.onload = function () {
 				if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
 					port.postMessage("getHHsecrets");
 				}
+				// Get HH Secrets
+				if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
+					port.postMessage("getSJsecrets");
+				}
 			} else {
 				if (countConnect > 5) {
 					document.getElementById('name').innerHTML = 'Неизвестно'

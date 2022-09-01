@@ -15,9 +15,21 @@ if ( window.location.href.indexOf('hh.ru/oauth/authorize?response_type=code&clie
 	alert('Внимание!\nДля корректного обновления ключей, после нажатия кнопки продолжить, дождитесь всплывающего окна с результатом обновления ')
 }
 
-if ( window.location.href.indexOf('https://samara.hh.ru/employer/edit/simple') != -1 &&  window.location.href.indexOf('code=') != -1) {  // HH API
+// HH API
+if ( window.location.href.indexOf('https://samara.hh.ru/employer/edit/simple') != -1 &&  window.location.href.indexOf('code=') != -1) { 
 	window.onload = function () {
 		let arr = { "hh_authorization_code": window.location.href.substr( window.location.href.indexOf('code=') + 5, window.location.href.length) }
+		chrome.runtime.sendMessage(arr, function (response) {
+			console.log(response);
+		});
+		alert('Внимание!\nБыло выполнено автоматическое обновление API ключей, можете закрыть вкладку и повторно вызвать расширения для импорта резюме')
+	}
+}
+
+// SuperJob API
+if ( window.location.href.indexOf('superjob.ru/clients/apteki-vita-2210879') != -1 &&  window.location.href.indexOf('code=') != -1) {
+	window.onload = function () {
+		let arr = { "sj_authorization_code": window.location.href.substr( window.location.href.indexOf('code=') + 5, window.location.href.length) }
 		chrome.runtime.sendMessage(arr, function (response) {
 			console.log(response);
 		});

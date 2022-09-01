@@ -117,8 +117,9 @@ function debugLogs(text, mode, port = null) {
         }
         
         if (port && port.name == 'mainPopup') {
-            // console.log(port)
-            port.postMessage({ "log" : text})
+            try {
+                port.postMessage({ "log" : text})
+            } catch (e) {}
         }
 
     }
@@ -221,9 +222,9 @@ function processingSJ(Settings, resumeURL, port = null) {
 
     port.postMessage({ "log" : "Запуск импорта резюме c SuperJob.ru"});
         
-    if (Settings.Client_id_hh && Settings.Client_secret_hh && Settings.ServiceDeskTOKEN) {
+    if (Settings.Client_id_sj && Settings.Client_secret_sj && Settings.ServiceDeskTOKEN) {
         // Запускаем верификацию токена SJ
-        //hhTOKEN(Settings, port)
+        sjTOKEN(Settings, port)
         //setTimeout(getResumeOnHHpage, 1000, Settings, resumeID, port)
     }
 }
@@ -304,10 +305,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.log('genAvitoToken')
     } else {
         if (message.hh_authorization_code ) {
-            chrome.storage.local.set({"hh_authorization_code": message.hh_authorization_code});
-            debugLogs(`Получен новый hh_authorization_code: ${message.hh_authorization_code}`)
-            //updSettings = updateSettings()
-            //setTimeout(hhTOKEN, 1000, updSettings)
+            chrome.storage.local.set({"hh_authorization_code": message.hh_authorization_code})
+            debugLogs(`Получен новый hh_authorization_code: ${message.hh_authorization_code}`, 'debug')
+        } else if (message.sj_authorization_code ) {
+            chrome.storage.local.set({"sj_authorization_code": message.sj_authorization_code})
+            debugLogs(`Получен новый sj_authorization_code: ${message.sj_authorization_code}`, 'debug')
         } else {
             if (message.updateResume) {
                 console.log('Обновление')
@@ -375,6 +377,12 @@ chrome.runtime.onConnect.addListener(function(port) {
                 debugLogs('Ветка получения ключей от HH.ru', 'debug')
                 verifServiceDeskTOKEN(updateSettings())
                 getHHsecrets(updateSettings())
+            break;
+
+            case 'getSJsecrets':
+                debugLogs('Ветка получения ключей от SuperJob.ru', 'debug')
+                verifServiceDeskTOKEN(updateSettings())
+                getSJsecrets(updateSettings())
             break;
 
             default:

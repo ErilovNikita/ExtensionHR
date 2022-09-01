@@ -1,5 +1,5 @@
 // Метод для получения Auth кода HH
-function getAuthCode(Settings, notValid = false) {
+function getAuthCodeHH(Settings, notValid = false) {
     let hhClientID = Settings.Client_id_hh
 
     if (
@@ -78,7 +78,7 @@ function hhTOKEN(Settings, port = null) {
         debugLogs('Токен HH не найден, проверка ключей для создания', 'debug')
     
         // Запускаем метод генирации Authorization code
-        getAuthCode(updateSettings(), true)
+        getAuthCodeHH(updateSettings(), true)
 
         function awaitAuthCode(updSettings) {
             if (
