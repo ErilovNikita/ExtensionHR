@@ -323,11 +323,11 @@ function createResumeHabr(Settings, resume, port = null) {
                     'salary' : salary(resume.salary),
                     'education_list' : education_list(resume.university_educations),
                     'experience_list' : experience_list(resume.experiences),
-                    'additional_list' : [],//additional_list(resume.education.additional),
+                    'additional_list' : [],
                     'moving': resume.relocation ? 'Готов к переезду' : 'Не готов к переезду',
                     'experience': experience(resume.experience_total),
                     'education' : null,
-                    'sex' : null,//resume.gender?.name ? resume.gender?.name : null,
+                    'sex' : null,
                     'link' : '<a href="https://career.habr.com/' + resume.login + '">career.habr.com</a>',
                     'field' : resume.specializations[0].title,
                     'system_icon' : 'habr',
@@ -338,9 +338,10 @@ function createResumeHabr(Settings, resume, port = null) {
 
                 if (resume.avatar != null) { // Фотография
                     if (resume.avatar && resume.avatar != '' && resume.avatar !== undefined) {
-                        toDataURL(resume.avatar).then(dataUrl => {
-                            body.photo = dataUrl
-                        })
+                        // toDataURL(resume.avatar).then(dataUrl => {
+                        //     body.photo = dataUrl
+                        // })
+                        body.photoUrl = resume.avatar
                     } else {
                         body.photo = []
                     }
