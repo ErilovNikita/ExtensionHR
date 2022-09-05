@@ -265,7 +265,31 @@ function createResumeHabr(Settings, resume, port = null) {
                     }
                 }
                 return result
-            } 
+            }
+            function getContact(contacts, attr) {
+                switch (attr) {
+                    case 'phone':
+                        if (contacts.phones.length > 0) { return contacts.phones[0].value } else {return null}
+
+                    case 'email':
+                        if (contacts.emails.length > 0) { return contacts.emails[0].value } else {return null}
+
+                    case 'telegram':
+                        if (contacts.messengers.length > 0) { 
+                            for (account of contacts.messengers) {
+                                if (account.type == 'telegram') {
+                                    return account.value 
+                                }
+                            }
+                            return null
+                        } else {
+                            return null
+                        }
+                
+                    default: 
+                        return null
+                }
+            }
 
             // Создаётся объект promise для формирования всех полей
             let processingCreatedHabrResume = new Promise((resolve) => {
@@ -281,10 +305,11 @@ function createResumeHabr(Settings, resume, port = null) {
                     'trip' : null,
                     'nationality': null,
                     'schedule' : resume.remote ? 'Готов к удаленной работе' : 'Не готов к удаленной работе',
-                    'phone' : null,
+                    'phone' : getContact(resume.contacts, 'phone'),
+                    'telegram' : getContact(resume.contacts, 'telegram'),
                     'birthday' : resume.birthday,
                     'skills' : getSkills(resume.skills),
-                    'email' : null,
+                    'email' : getContact(resume.contacts, 'email'),
                     'salary' : salary(resume.salary),
                     'education_list' : education_list(resume.university_educations),
                     'experience_list' : experience_list(resume.experiences),
@@ -309,6 +334,8 @@ function createResumeHabr(Settings, resume, port = null) {
                     }
                 } else { body.photo = [] }
             
+
+
                 resolve(body);
 
             });
