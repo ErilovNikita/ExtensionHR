@@ -285,6 +285,18 @@ function createResumeHabr(Settings, resume, port = null) {
                         } else {
                             return null
                         }
+                    
+                    case 'skype':
+                        if (contacts.messengers.length > 0) { 
+                            for (account of contacts.messengers) {
+                                if (account.type == 'skype') {
+                                    return account.value 
+                                }
+                            }
+                            return null
+                        } else {
+                            return null
+                        }
                 
                     default: 
                         return null
@@ -307,6 +319,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'schedule' : resume.remote ? 'Готов к удаленной работе' : 'Не готов к удаленной работе',
                     'phone' : getContact(resume.contacts, 'phone'),
                     'telegram' : getContact(resume.contacts, 'telegram'),
+                    'skype' : getContact(resume.contacts, 'skype'),
                     'birthday' : resume.birthday,
                     'skills' : getSkills(resume.skills),
                     'email' : getContact(resume.contacts, 'email'),
