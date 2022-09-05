@@ -223,7 +223,7 @@ function createResumeHabr(Settings, resume, port = null) {
                             'metaClass' :'orgResume$experience',
                             'title': value[index].company_name,
                             'position': value[index].position,
-                            'responsibiliti': value[index].description.replaceAll('<p>', '').replaceAll('</p>', ''),
+                            'responsibiliti': value[index].description ? value[index].description.replaceAll('<p>', '').replaceAll('</p>', '') : null,
                             "startWork": value[index].start_date,
                             "finishWork": value[index].end_date
                         };
