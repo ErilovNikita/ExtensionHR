@@ -163,9 +163,6 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
                 ) {
                     debugLogs('Получение токена заверишлось ошибкой, сеесия окончена, открываю окно авторизации', 'debug')
                     chrome.tabs.create({url: 'https://' + SettingsData.serverURL + '/sd/', selected: true})
-                    if (SettingsData.ServiceDeskTOKEN) {
-                        return verifServiceDeskTOKEN(updateSettings(), port)
-                    }
                 } else {
                     if ( data.indexOf('error') != -1) {
                         return null
@@ -211,7 +208,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
                     debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации', 'warn', port)
                     chrome.storage.local.remove(["ServiceDeskTOKEN"]);
                     
-                    return verifServiceDeskTOKEN(updateSettings(), port, true)
+                    setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port, true)
                 }
             })
 
@@ -219,7 +216,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
             debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации...', 'warn', port)
             chrome.storage.local.remove(["ServiceDeskTOKEN"]);
 
-            return verifServiceDeskTOKEN(updateSettings(), port, true)
+            return setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port, true)
         }
     }
 }
