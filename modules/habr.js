@@ -21,46 +21,48 @@ function getAuthCodeHabr(Settings, notValid = false) {
 }
 
 // Метод для генирации нового токена habr
-// function genHabrToken(port = null) {
+function genHabrToken(port = null) {
 
-//     Settings = updateSettings()
+    Settings = updateSettings()
+    let redirectURL = encodeURIComponent('https://career.habr.com/companies/vitaexpress')
 
-//     fetch('https://habr.ru/oauth/token', { 
-//         method: "POST",
-//         body: `grant_type=authorization_code&client_id=${Settings.Client_id_habr}&client_secret=${Settings.Client_secret_habr}&code=${Settings.habr_authorization_code}`,
-//         headers: {
-//             "Content-Type":"application/x-www-form-urlencoded",
-//         },
-//     })
-//     .then((response) => response.json())
-//     .then((data) => {
-//         if (data.error == "invalid_grant" || data.error == "invalid_client") {
-//             debugLogs(`При выполнении genHabrToken(${Settings.habr_authorization_code}) произошла ошибка ${data.error}`, 'error')
-//             chrome.storage.local.remove(["habr_authorization_code"])
-//             setTimeout(habrTOKEN, 500, updateSettings(), port)
-//         } else {
-//             if (data.access_token) {
+    fetch('https://career.habr.com/integrations/oauth/token', { 
+        method: "POST",
+        body: `grant_type=authorization_code&client_id=${Settings.Client_id_habr}&client_secret=${Settings.Client_secret_habr}&code=${Settings.habr_authorization_code}&redirect_uri=${redirectURL}`,
+        headers: {
+            "Content-Type":"application/x-www-form-urlencoded",
+        },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.error == "invalid_grant" || data.error == "invalid_client") {
+            debugLogs(`При выполнении genHabrToken(${Settings.habr_authorization_code}) произошла ошибка ${data.error}`, 'error')
+            chrome.storage.local.remove(["habr_authorization_code"])
+            setTimeout(habrTOKEN, 2000, updateSettings(), port)
+        } else {
+            if (data.access_token) {
 
-//                 // На основе входящих данных получаем дату смерти токена 
-//                 var deadLineToken = new Date()
-//                 deadLineToken.setSeconds( deadLineToken.getSeconds() + data.expires_in )
-                
-//                 // Записываем все данные в память
-//                 chrome.storage.local.set({
-//                     "habr_token": data.access_token,
-//                     "habr_token_deadline": deadLineToken.getTime(),
-//                     "habr_refresh_token": data.refresh_token
-//                 });
+                // На основе входящих данных получаем дату смерти токена (10 минут жизни)
+                let createdDateTime = new Date(data.created_at )
+                let deadLineToken = new Date(createdDateTime.getTime() + 10 * 60000)
+
+                // Записываем все данные в память
+                chrome.storage.local.set({
+                    "habr_token": data.access_token,
+                    "habr_token_deadline": deadLineToken.getTime()
+                });
+
+                updateSettings()
             
-//                 //updateTokenHabrOnSD(updateSettings())
-//                 return data.access_token
-//             } else {
-//                 debugLogs('При выполнении genHabrToken() произошла неизвестная ошибка!' + data.error, 'error')
-//             }
-//         }
-//     })
+                //updateTokenHabrOnSD(updateSettings())
+                return data.access_token
+            } else {
+                debugLogs('При выполнении genHabrToken() произошла неизвестная ошибка!' + data.error, 'error')
+            }
+        }
+    })
 
-// }
+}
 
 // Метод возвращает свежий токен Habr
 function habrTOKEN(Settings, port = null) {
@@ -70,14 +72,14 @@ function habrTOKEN(Settings, port = null) {
             debugLogs('Найден активированный токен Habr', 'debug')
             return Settings.habr_token
         } else {
-            debugLogs('Найден токен Habr с истекшим сроком давности, жду 1000мс и повоторяю попытку', 'debug')
+            debugLogs('Найден токен Habr с истекшим сроком давности, жду 1500мс и повоторяю попытку', 'debug')
             chrome.storage.local.remove([
                 "habr_token",
                 "habr_authorization_code",
                 "habr_token_deadline",
                 "habr_refresh_token"
             ])
-            setTimeout(habrTOKEN, 1000, updateSettings(), port)
+            setTimeout(habrTOKEN, 1500, updateSettings(), port)
         }
     } else {
         debugLogs('Токен Habr не найден, проверка ключей для создания', 'debug')
