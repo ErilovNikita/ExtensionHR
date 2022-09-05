@@ -167,28 +167,6 @@ function createResumeHabr(Settings, resume, port = null) {
 
             debugLogs('Формирую поля резюме', 'debug', port)
 
-            function comments() {
-                let arrComments = []
-                // debugLogs('Ожидаю комментарии в количестве ' + resume.owner.comments.counters.total + ' шт.', 'warn', port)
-                // if (resume.owner.comments.counters.total > 0) {
-
-                //     fetch(resume.owner.comments.url, { 
-                //         method: "GET",
-                //         headers: {
-                //             "Authorization"     : `Bearer ${Settings.hh_token}`,
-                //             "HH-User-Agent"     : `integration Service Desk/2.0 (erilov.na@vitaexpress.ru)`
-                //         },
-                //     })
-                //     .then((response) => response.json())
-                //     .then((data) => {
-                //         data.items.forEach(function(item) {
-                //             let obj = {"author" : item.author.full_name, "created_at" : item.created_at, "text": item.text}
-                //             arrComments.push(obj)
-                //         })
-                //     })
-                // }
-                return arrComments
-            }
             function experience(value) { // Рабочий стаж (Строка)
                 if (value != null) {
 
@@ -264,24 +242,6 @@ function createResumeHabr(Settings, resume, port = null) {
                     return []
                 }
             }
-            function additional_list(value) { // Список повышений квалификации, курсов
-                if (value && value !== undefined && value != []) {
-                let additional_list = []
-                for (let index = 0; index < value.length; index++) {
-                    let body = {
-                    'metaClass' :'orgResume$additional',
-                    'year': value[index].year,
-                    'title': value[index].name,
-                    'type': value[index].result,
-                    'company' : value[index].organization
-                    };
-                    additional_list.push(body)
-                }
-                return additional_list
-                } else {
-                return []
-                }
-            }
             function getLocation(value) { // Метод получения адреса
                 let result = null
                 if (value.country) {
@@ -332,7 +292,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'field' : resume.specializations[0].title,
                     'system_icon' : 'habr',
                     'HR_id' : resume.login,
-                    'comments' : comments(),
+                    'comments' : [],
                     'author' : Settings.serverLogin
                 }
 
