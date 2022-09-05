@@ -239,21 +239,29 @@ function createResumeHabr(Settings, resume, port = null) {
             }
             function experience_list(value) { // Список прошлых мест работы
                 if (value && value !== undefined && value != []) {
-                let experience_list = []
-                for (let index = 0; index < value.length; index++) {
-                    let body = {
-                    'metaClass' :'orgResume$experience',
-                    'title': value[index].company,
-                    'position': value[index].position,
-                    'responsibiliti': value[index].description,
-                    "startWork": value[index].start,
-                    "finishWork": value[index].end
-                    };
-                    experience_list.push(body)
-                }
-                return experience_list
+                    let experience_list = []
+                    for (let index = 0; index < value.length; index++) {
+                        let body = {
+                            'metaClass' :'orgResume$experience',
+                            'title': value[index].company_name,
+                            'position': value[index].position,
+                            'responsibiliti': value[index].description.replaceAll('<p>', '').replaceAll('</p>', ''),
+                            "startWork": value[index].start_date,
+                            "finishWork": value[index].end_date
+                        };
+
+                        if (value[index].skills.length > 0) {
+                            body.responsibiliti += "<br><br>"
+                            for (skill of value[index].skills) {
+                                body.responsibiliti += `<b>${skill.title}</b>  `
+                            }
+                        }
+
+                        experience_list.push(body)
+                    }
+                    return experience_list
                 } else {
-                return []
+                    return []
                 }
             }
             function additional_list(value) { // Список повышений квалификации, курсов
@@ -314,7 +322,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'email' : null,
                     'salary' : salary(resume.salary),
                     'education_list' : education_list(resume.university_educations),
-                    'experience_list' : [],//experience_list(resume.experience),
+                    'experience_list' : experience_list(resume.experiences),
                     'additional_list' : [],//additional_list(resume.education.additional),
                     'moving': resume.relocation ? 'Готов к переезду' : 'Не готов к переезду',
                     'experience': experience(resume.experience_total),
