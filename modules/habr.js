@@ -10,7 +10,7 @@ function getAuthCodeHabr(Settings, notValid = false) {
     ) {
         return Settings.habr_authorization_code
     } else {
-        debugLogs('Попытка открыть окно с авторизацией career.habr.com', 'debug')
+        debugLogs('Попытка открыть окно с авторизацией Хабр Карьера', 'debug')
         let redirectURL = encodeURIComponent('https://career.habr.com/companies/vitaexpress')
         chrome.tabs.create({
             url: `https://career.habr.com/integrations/oauth/authorize?client_id=${habrClientID}&redirect_uri=${redirectURL}&response_type=code`, 
@@ -102,5 +102,60 @@ function habrTOKEN(Settings, port = null) {
         
         awaitAuthCode(updateSettings())
 
+    }
+}
+
+// Метод для получения резюме
+async function getResumeOnHabrPage(Settings, resumeID, port = null) {
+    // Обьявляем переменную для хранения резюме
+    let resume = null
+
+    if (Settings.habr_token && Settings.habr_token != '' && Settings.habr_token !== undefined) {
+        let habr_token = Settings.habr_token
+        let habrClientID = Settings.Client_id_habr
+
+        debugLogs('Токен Хабр Карьера - На месте', 'debug', port)
+
+        let response = await fetch(`https://career.habr.com/api/v1/integrations/users/${resumeID}`, { 
+            method: "GET",
+            headers: {
+                "Authorization"     : `Bearer ${habr_token}`
+            }
+        })
+
+        if ( response.status == 403 ) {
+            resp = JSON.parse(data.response)
+        
+            // Обработка ошибки token_revoked
+            if (resp.errors[0].type == 'oauth' && resp.errors[0].value == 'token_revoked') {
+                debugLogs('Обнаружена ошибка ключа Хабр Карьера, попытка исправить', 'debug', port) 
+                chrome.storage.local.remove([
+                    "habr_authorization_code",
+                    "habr_token",
+                    "habr_token_deadline"
+                ])
+                updateSettings()
+                
+                debugLogs('Попытка открыть окно с авторизацией Хабр Карьера', 'debug')
+                let redirectURL = encodeURIComponent('https://career.habr.com/companies/vitaexpress')
+                chrome.tabs.create({
+                    url: `https://career.habr.com/integrations/oauth/authorize?client_id=${habrClientID}&redirect_uri=${redirectURL}&response_type=code`, 
+                    selected: true
+                })
+        
+            }  else {
+                debugLogs(`<b>При обращении к Хабр Карьера, возникла неизвестная ошибка! <br><em>${resp.errors[0].type}: </b>${resp.errors[0].value}</em><br>Обратитесь в Сервис Деск, для решения`, 'error', port)
+            }
+        } else {
+            resume = await response.json();
+            debugLogs(resume, 'JSON')
+        }
+        
+        // Формируем резюме
+        createResumeHabr(Settings, resume, port)
+  
+    } else {
+        debugLogs('Токен Хабр Карьера не найден, ожидание habrTOKEN() 1500мс...', 'warn')
+        setTimeout(getResumeOnHabrPage, 1500, updateSettings(), resumeID, port)
     }
 }

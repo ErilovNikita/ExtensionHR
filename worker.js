@@ -255,7 +255,7 @@ function processingHabr(Settings, resumeURL, port = null) {
     if (Settings.Client_id_habr && Settings.Client_secret_habr && Settings.ServiceDeskTOKEN) {
         // Запускаем верификацию токена SJ
         habrTOKEN(Settings, port)
-        //setTimeout(getResumeOnSJpage, 1000, Settings, resumeID, port)
+        setTimeout(getResumeOnHabrPage, 1000, updateSettings(), resumeID, port)
     }
 
 }
