@@ -354,7 +354,8 @@ function createResumeHH(Settings, resume, port = null) {
                         'author' : Settings.serverLogin
                     }
 
-                    if (resume.photo != null) { // Фотография
+                    // Фотография
+                    if (resume.photo != null) {
                         if (resume.photo.medium && resume.photo.medium != '' && resume.photo.medium !== undefined) {
                             body.photo = resume.photo.medium
                         } else {

@@ -339,7 +339,8 @@ function createResumeHabr(Settings, resume, port = null) {
                     'author' : Settings.serverLogin
                 }
 
-                if (resume.avatar != null) { // Фотография
+                // Фотография
+                if (resume.avatar != null) { 
                     if (resume.avatar && resume.avatar != '' && resume.avatar !== undefined) {
                         body.photoUrl = resume.avatar
                     } else {
@@ -347,8 +348,6 @@ function createResumeHabr(Settings, resume, port = null) {
                     }
                 } else { body.photo = [] }
             
-
-
                 resolve(body);
 
             });
