@@ -192,7 +192,7 @@ function createResumeHabr(Settings, resume, port = null) {
                 }
             }
             function salary(value) {// Зарплата (Строка)
-                if (value != null) {
+                if (value.from != null) {
                     return value.from.toString() + ' ' + value.currency
                 } else {
                     return "Не указано"
