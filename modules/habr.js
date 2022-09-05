@@ -159,3 +159,212 @@ async function getResumeOnHabrPage(Settings, resumeID, port = null) {
         setTimeout(getResumeOnHabrPage, 1500, updateSettings(), resumeID, port)
     }
 }
+
+// Метод для формирования полей резюме
+function createResumeHabr(Settings, resume, port = null) {
+    if (resume && resume != '' && resume !== undefined) {
+        if (Settings.serverLogin && Settings.serverLogin != '' && Settings.serverLogin !== undefined) {
+
+            debugLogs('Формирую поля резюме', 'debug', port)
+
+            function comments() {
+                let arrComments = []
+                // debugLogs('Ожидаю комментарии в количестве ' + resume.owner.comments.counters.total + ' шт.', 'warn', port)
+                // if (resume.owner.comments.counters.total > 0) {
+
+                //     fetch(resume.owner.comments.url, { 
+                //         method: "GET",
+                //         headers: {
+                //             "Authorization"     : `Bearer ${Settings.hh_token}`,
+                //             "HH-User-Agent"     : `integration Service Desk/2.0 (erilov.na@vitaexpress.ru)`
+                //         },
+                //     })
+                //     .then((response) => response.json())
+                //     .then((data) => {
+                //         data.items.forEach(function(item) {
+                //             let obj = {"author" : item.author.full_name, "created_at" : item.created_at, "text": item.text}
+                //             arrComments.push(obj)
+                //         })
+                //     })
+                // }
+                return arrComments
+            }
+            function experience(value) { // Рабочий стаж (Строка)
+                if (value != null) {
+
+                    function getWords(monthCount) {
+                        function getPlural(number, word) {
+                            return number === 1 && word.one || word.other;
+                        }
+
+                        var months = { one: 'месяц', other: 'месяцев' },
+                            years = { one: 'год', other: 'лет' },
+                            m = monthCount % 12,
+                            y = Math.floor(monthCount / 12),
+                            result = [];
+
+                        y && result.push(y + ' ' + getPlural(y, years));
+                        m && result.push(m + ' ' + getPlural(m, months));
+                        return result.join(' и ');
+                    }
+                    return getWords(value)
+
+                } else {
+                    return 'Не указан'
+                }
+            }
+            function salary(value) {// Зарплата (Строка)
+                if (value != null) {
+                    return value.from.toString() + ' ' + value.currency
+                } else {
+                    return "Не указано"
+                }
+            }
+            function education_list(value) { // Список учебных заведений
+                if (value && value !== undefined && value != []) {
+                let education_list = []
+                for (let index = 0; index < value.length; index++) {
+                    let body = {
+                    'metaClass' :'orgResume$education',
+                    'year': value[index].year,
+                    'title': value[index].name,
+                    'position': value[index].organization + ', ' + value[index].result
+                    };
+                    education_list.push(body)
+                }
+                return education_list
+                } else {
+                return []
+                }
+            }
+            function experience_list(value) { // Список прошлых мест работы
+                if (value && value !== undefined && value != []) {
+                let experience_list = []
+                for (let index = 0; index < value.length; index++) {
+                    let body = {
+                    'metaClass' :'orgResume$experience',
+                    'title': value[index].company,
+                    'position': value[index].position,
+                    'responsibiliti': value[index].description,
+                    "startWork": value[index].start,
+                    "finishWork": value[index].end
+                    };
+                    experience_list.push(body)
+                }
+                return experience_list
+                } else {
+                return []
+                }
+            }
+            function additional_list(value) { // Список повышений квалификации, курсов
+                if (value && value !== undefined && value != []) {
+                let additional_list = []
+                for (let index = 0; index < value.length; index++) {
+                    let body = {
+                    'metaClass' :'orgResume$additional',
+                    'year': value[index].year,
+                    'title': value[index].name,
+                    'type': value[index].result,
+                    'company' : value[index].organization
+                    };
+                    additional_list.push(body)
+                }
+                return additional_list
+                } else {
+                return []
+                }
+            }
+            function getLocation(value) { // Метод получения адреса
+                let result = null
+                if (value.country) {
+                    result = value.country
+                    if (value.city) {
+                        result += ', ' + value.city
+                    }
+                }
+                return result
+            }
+            function getSkills(value) { // Скилы
+                let result = []
+                if (value.length > 0) {
+                    for (skill of value) {
+                        result.push(skill.title)
+                    }
+                }
+                return result
+            } 
+
+            // Создаётся объект promise для формирования всех полей
+            let processingCreatedHabrResume = new Promise((resolve) => {
+                
+                let body = {
+                    'metaClass' : 'resume$resume',
+                    'applicant': null,
+                    'owner_id' : null,
+                    'title' : resume.full_name,
+                    'age' : resume.age,
+                    'description': resume.about,
+                    'address': getLocation(resume.location),
+                    'trip' : null,
+                    'nationality': null,
+                    'schedule' : resume.remote ? 'Готов к удаленной работе' : 'Не готов к удаленной работе',
+                    'phone' : null,
+                    'birthday' : resume.birthday,
+                    'skills' : getSkills(resume.skills),
+                    'email' : null,
+                    'salary' : salary(resume.salary),
+                    'education_list' : [],//education_list(resume.education.primary),
+                    'experience_list' : [],//experience_list(resume.experience),
+                    'additional_list' : [],//additional_list(resume.education.additional),
+                    'moving': resume.relocation ? 'Готов к переезду' : 'Не готов к переезду',
+                    'experience': experience(resume.experience_total),
+                    'education' : null,
+                    'sex' : null,//resume.gender?.name ? resume.gender?.name : null,
+                    'link' : '<a href="https://career.habr.com/' + resume.login + '">career.habr.com</a>',
+                    'field' : resume.specializations[0].title,
+                    'system_icon' : 'habr',
+                    'HR_id' : resume.login,
+                    'comments' : comments(),
+                    'author' : Settings.serverLogin
+                }
+
+                if (resume.avatar != null) { // Фотография
+                    if (resume.avatar && resume.avatar != '' && resume.avatar !== undefined) {
+                        toDataURL(resume.avatar).then(dataUrl => {
+                            body.photo = dataUrl
+                        })
+                    } else {
+                        body.photo = []
+                    }
+                } else { body.photo = [] }
+            
+                resolve(body);
+
+            });
+
+            // Отправляю резюме
+            processingCreatedHabrResume.then( resumeBody => {
+                sendResume(Settings, resumeBody, port)
+            });
+
+        } else {
+            port.postMessage({'alert': 'Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!'})
+            chrome.tabs.create({url: 'chrome-extension://' + chrome.app.getDetails().id + '/settings.html', selected: true})
+            
+            function checkLogin() {
+                debugLogs('Жду логин пользователя в настроках расширения 1500мс...', 'warn')
+                if (Settings.serverLogin != '' && Settings.serverLogin !== undefined) {
+                    debugLogs('Пользователь ввел логин, запускаю createResume()', 'debug')
+                    createResume()
+                } else {
+                    setTimeout(checkLogin, 1500)
+                }
+            }
+
+            checkLogin()
+        }
+    } else {
+        debugLogs('Ожидание данных 100мс...', 'warn')
+        setTimeout(createResume, 100)
+    }
+}

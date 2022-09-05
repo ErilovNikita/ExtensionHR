@@ -324,7 +324,6 @@ function createResumeHH(Settings, resume, port = null) {
                         }
                     }
 
-                    
                     let body = {
                         'metaClass' : 'resume$resume',
                         'applicant': applicant,
