@@ -44,6 +44,29 @@ function getSJsecrets(Settings) {
     })
 }
 
+// Метод для получения секретов SJ из Сервис Деска
+function getHabrsecrets(Settings) {
+    let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.getHABRsecrets&params=`
+    
+    fetch(url, { 
+        method: "GET" 
+    })
+    .then((response) => response.text())
+    .then((data) => {
+        if (
+            data != '' && 
+            data.indexOf('<!DOCTYPE html>') == -1
+        ) {
+            dataJSON = JSON.parse(data)
+            chrome.storage.local.set({
+                "Client_secret_habr": dataJSON.Client_secret_habr,
+                "Client_id_habr": dataJSON.Client_id_habr
+            });
+            updateSettings()
+        }
+    })
+}
+
 // Метод для получения ФИО из Сервис Деска
 function getNameEmpl(Settings) {
     if ( Settings.serverLogin ) {

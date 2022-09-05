@@ -36,3 +36,14 @@ if ( window.location.href.indexOf('superjob.ru/clients/apteki-vita-2210879') != 
 		alert('Внимание!\nБыло выполнено автоматическое обновление API ключей, можете закрыть вкладку и повторно вызвать расширения для импорта резюме')
 	}
 }
+
+// Хабр Карьера API
+if ( window.location.href.indexOf('career.habr.com/companies/vitaexpress') != -1 &&  window.location.href.indexOf('code=') != -1) {
+	window.onload = function () {
+		let arr = { "habr_authorization_code": window.location.href.substr( window.location.href.indexOf('code=') + 5, window.location.href.length) }
+		chrome.runtime.sendMessage(arr, function (response) {
+			console.log(response);
+		});
+		alert('Внимание!\nБыло выполнено автоматическое обновление API ключей, можете закрыть вкладку и повторно вызвать расширения для импорта резюме')
+	}
+}

@@ -341,6 +341,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         } else if (message.sj_authorization_code ) {
             chrome.storage.local.set({"sj_authorization_code": message.sj_authorization_code})
             debugLogs(`Получен новый sj_authorization_code: ${message.sj_authorization_code}`, 'debug')
+        } else if (message.habr_authorization_code ) {
+            chrome.storage.local.set({"habr_authorization_code": message.habr_authorization_code})
+            debugLogs(`Получен новый habr_authorization_code: ${message.habr_authorization_code}`, 'debug')
         } else {
             if (message.updateResume) {
                 console.log('Обновление')
@@ -392,6 +395,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                             // port.postMessage({ "mode" : "close"});
                             port.postMessage({ "log" : 'К сожалению, действий на данной странице не обнаружено'})
                         }
+                    }  else if (tabs[0].url.indexOf(arrSite[4]) != -1 ) { // Обновление резюме из Хабр Карьера
+                        // Запускаем процесс обработки резюме
+                        processingHabr(Settings, tabs[0].url, port)
                     } else {
                         port.postMessage({ "log" : 'К сожалению данный сайт еще не поддерживается функцией автоматического импорта кандидатов!'})
                     }
@@ -414,6 +420,12 @@ chrome.runtime.onConnect.addListener(function(port) {
                 debugLogs('Ветка получения ключей от SuperJob.ru', 'debug')
                 verifServiceDeskTOKEN(updateSettings())
                 getSJsecrets(updateSettings())
+            break;
+
+            case 'getHabrsecrets':
+                debugLogs('Ветка получения ключей от Хабр Карьера', 'debug')
+                verifServiceDeskTOKEN(updateSettings())
+                getHabrsecrets(updateSettings())
             break;
 
             default:

@@ -86,6 +86,7 @@ window.onload = function () {
 				document.getElementById('name').innerHTML = Settings.sdName
 				document.getElementById('color-state').innerHTML = '🟢'
 				document.getElementById('state').innerHTML = 'Подключено'
+
 				// Get HH Secrets
 				if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
 					port.postMessage("getHHsecrets");
@@ -93,6 +94,10 @@ window.onload = function () {
 				// Get HH Secrets
 				if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
 					port.postMessage("getSJsecrets");
+				}
+				// Get Habr Secrets
+				if (!Settings.Client_id_habr || !Settings.Client_secret_habr || Settings.Client_id_habr == 'undefined' || Settings.Client_secret_habr == 'undefined') {
+					port.postMessage("getHabrsecrets");
 				}
 			} else {
 				if (countConnect > 5) {
