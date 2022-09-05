@@ -338,9 +338,6 @@ function createResumeHabr(Settings, resume, port = null) {
 
                 if (resume.avatar != null) { // Фотография
                     if (resume.avatar && resume.avatar != '' && resume.avatar !== undefined) {
-                        // toDataURL(resume.avatar).then(dataUrl => {
-                        //     body.photo = dataUrl
-                        // })
                         body.photoUrl = resume.avatar
                     } else {
                         body.photo = []

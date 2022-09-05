@@ -356,9 +356,7 @@ function createResumeHH(Settings, resume, port = null) {
 
                     if (resume.photo != null) { // Фотография
                         if (resume.photo.medium && resume.photo.medium != '' && resume.photo.medium !== undefined) {
-                            toDataURL(resume.photo.medium).then(dataUrl => {
-                                body.photo = dataUrl
-                            })
+                            body.photo = resume.photo.medium
                         } else {
                             body.photo = []
                         }
