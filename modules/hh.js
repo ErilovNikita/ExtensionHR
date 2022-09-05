@@ -324,7 +324,6 @@ function createResumeHH(Settings, resume, port = null) {
                         }
                     }
 
-                    
                     let body = {
                         'metaClass' : 'resume$resume',
                         'applicant': applicant,
@@ -355,11 +354,10 @@ function createResumeHH(Settings, resume, port = null) {
                         'author' : Settings.serverLogin
                     }
 
-                    if (resume.photo != null) { // Фотография
+                    // Фотография
+                    if (resume.photo != null) {
                         if (resume.photo.medium && resume.photo.medium != '' && resume.photo.medium !== undefined) {
-                            toDataURL(resume.photo.medium).then(dataUrl => {
-                                body.photo = dataUrl
-                            })
+                            body.photoUrl = resume.photo.medium
                         } else {
                             body.photo = []
                         }

@@ -44,6 +44,29 @@ function getSJsecrets(Settings) {
     })
 }
 
+// Метод для получения секретов SJ из Сервис Деска
+function getHabrsecrets(Settings) {
+    let url = `https://${Settings.serverURL}/sd/services/rest/execM2H?func=modules.ChromeIntegration.getHABRsecrets&params=`
+    
+    fetch(url, { 
+        method: "GET" 
+    })
+    .then((response) => response.text())
+    .then((data) => {
+        if (
+            data != '' && 
+            data.indexOf('<!DOCTYPE html>') == -1
+        ) {
+            dataJSON = JSON.parse(data)
+            chrome.storage.local.set({
+                "Client_secret_habr": dataJSON.Client_secret_habr,
+                "Client_id_habr": dataJSON.Client_id_habr
+            });
+            updateSettings()
+        }
+    })
+}
+
 // Метод для получения ФИО из Сервис Деска
 function getNameEmpl(Settings) {
     if ( Settings.serverLogin ) {
@@ -140,9 +163,6 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
                 ) {
                     debugLogs('Получение токена заверишлось ошибкой, сеесия окончена, открываю окно авторизации', 'debug')
                     chrome.tabs.create({url: 'https://' + SettingsData.serverURL + '/sd/', selected: true})
-                    if (SettingsData.ServiceDeskTOKEN) {
-                        return verifServiceDeskTOKEN(updateSettings(), port)
-                    }
                 } else {
                     if ( data.indexOf('error') != -1) {
                         return null
@@ -188,7 +208,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
                     debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации', 'warn', port)
                     chrome.storage.local.remove(["ServiceDeskTOKEN"]);
                     
-                    return verifServiceDeskTOKEN(updateSettings(), port, true)
+                    setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port, true)
                 }
             })
 
@@ -196,7 +216,7 @@ function verifServiceDeskTOKEN(SettingsData, port = null, broken = false) {
             debugLogs('Существующий токен Service Desk - НЕ валидный, запуск повторной генерации...', 'warn', port)
             chrome.storage.local.remove(["ServiceDeskTOKEN"]);
 
-            return verifServiceDeskTOKEN(updateSettings(), port, true)
+            return setTimeout(verifServiceDeskTOKEN, 1500, updateSettings(), port, true)
         }
     }
 }
