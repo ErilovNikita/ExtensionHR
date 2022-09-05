@@ -222,19 +222,19 @@ function createResumeHabr(Settings, resume, port = null) {
             }
             function education_list(value) { // Список учебных заведений
                 if (value && value !== undefined && value != []) {
-                let education_list = []
-                for (let index = 0; index < value.length; index++) {
-                    let body = {
-                    'metaClass' :'orgResume$education',
-                    'year': value[index].year,
-                    'title': value[index].name,
-                    'position': value[index].organization + ', ' + value[index].result
-                    };
-                    education_list.push(body)
-                }
-                return education_list
+                    let education_list = []
+                    for (let index = 0; index < value.length; index++) {
+                        let body = {
+                            'metaClass' :'orgResume$education',
+                            'year': value[index].end_date.split('-')[0],
+                            'title': value[index].university_name,
+                            'position': value[index].faculty_name + ', ' + value[index].description.replace(/<\/?[^>]+>/g,'')
+                        };
+                        education_list.push(body)
+                    }
+                    return education_list
                 } else {
-                return []
+                    return []
                 }
             }
             function experience_list(value) { // Список прошлых мест работы
@@ -303,7 +303,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'owner_id' : null,
                     'title' : resume.full_name,
                     'age' : resume.age,
-                    'description': resume.about,
+                    'description': resume.about.replaceAll('<p>', '').replaceAll('</p>', ''),
                     'address': getLocation(resume.location),
                     'trip' : null,
                     'nationality': null,
@@ -313,7 +313,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'skills' : getSkills(resume.skills),
                     'email' : null,
                     'salary' : salary(resume.salary),
-                    'education_list' : [],//education_list(resume.education.primary),
+                    'education_list' : education_list(resume.university_educations),
                     'experience_list' : [],//experience_list(resume.experience),
                     'additional_list' : [],//additional_list(resume.education.additional),
                     'moving': resume.relocation ? 'Готов к переезду' : 'Не готов к переезду',
