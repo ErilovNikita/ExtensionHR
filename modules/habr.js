@@ -202,11 +202,16 @@ function createResumeHabr(Settings, resume, port = null) {
                 if (value && value !== undefined && value != []) {
                     let education_list = []
                     for (let index = 0; index < value.length; index++) {
+                        let position = value[index].faculty_name
+                        if (value[index].description) {
+                            position = position.toString() + ', ' + value[index].description.replace(/<\/?[^>]+>/g,'')
+                        }
+
                         let body = {
                             'metaClass' :'orgResume$education',
                             'year': value[index].end_date.split('-')[0],
                             'title': value[index].university_name,
-                            'position': value[index].faculty_name + ', ' + value[index].description.replace(/<\/?[^>]+>/g,'')
+                            'position': position
                         };
                         education_list.push(body)
                     }
