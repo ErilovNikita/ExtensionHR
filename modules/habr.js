@@ -302,6 +302,13 @@ function createResumeHabr(Settings, resume, port = null) {
                         return null
                 }
             }
+            function getDescription(value) {
+                if (value) {
+                    return resume.about.replaceAll('<p>', '').replaceAll('</p>', '')
+                } else {
+                    return null
+                }
+            }
 
             // Создаётся объект promise для формирования всех полей
             let processingCreatedHabrResume = new Promise((resolve) => {
@@ -312,7 +319,7 @@ function createResumeHabr(Settings, resume, port = null) {
                     'owner_id' : null,
                     'title' : resume.full_name,
                     'age' : resume.age,
-                    'description': resume.about.replaceAll('<p>', '').replaceAll('</p>', ''),
+                    'description': getDescription(resume.about),
                     'address': getLocation(resume.location),
                     'trip' : null,
                     'nationality': null,
