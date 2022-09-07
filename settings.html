@@ -5,216 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Настройка модуля vitaHR</title>
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-	<script src="settings.js"></script>
-	<style>
-        * {
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            user-select: none;  
-        }
-		.window {
-			margin-top: 50px;
-			max-width: 500px;
-			border-radius: 10px;
-		}
-		.window .header{
-			padding: 50px;
-			border-radius: 10px 10px 0 0;
-		}
-		.window .header img{
-			height: 80px;
-			margin-bottom: 20px;
-		}
-		.shadow {
-			border-radius: 10px;
-		}
-		.window .body {
-			padding: 50px;
-			border-radius: 0 0 10px 10px;
-		}
-		.footer button {
-			border: 0;
-			background-color: transparent;
-			font-weight: 600;
-			color: #7000b7;
-		}
-		.footer button:hover{
-			color: #9e02ff;
-		}
-		.footer button:active{
-			color: #460072;
-		}
-
-        #progress-bar {
-            text-align: center;
-            position: relative;
-            margin-top: 20px;
-			padding-bottom: 20px;
-        }
-
-        #progress-bar fieldset {
-            background: white;
-            border: 0 none;
-            border-radius: 0.5rem;
-            box-sizing: border-box;
-            width: 100%;
-            margin: 0;
-            padding-bottom: 20px;
-            position: relative
-        }
-
-        .finish {
-            text-align: center
-        }
-
-        #progress-bar fieldset:not(:first-of-type) {
-            display: none
-        }
-
-        #progress-bar .previous-step, .next-step {
-            width: 100px;
-            font-weight: bold;
-            color: white;
-            border: 0 none;
-            border-radius: 0px;
-            cursor: pointer;
-            padding: 10px 5px;
-            margin: 10px 5px 10px 0px;
-            float: right
-        }
-
-        .progress-bar, .previous-step {
-            background: #616161;
-        }
-
-        .progress-bar, .next-step {
-            background: #2F8D46;
-        }
-
-        #progress-bar .previous-step:hover,
-        #progress-bar .previous-step:focus {
-            background-color: #000000
-        }
-
-        #progress-bar .next-step:hover,
-        #progress-bar .next-step:focus {
-            background-color: #2F8D46
-        }
-
-        .text {
-            color: #2F8D46;
-            font-weight: normal
-        }
-
-        #progressbar {
-			padding: 0;
-            overflow: hidden;
-            color: lightgrey
-        }
-
-        #progressbar .active {
-            color: #2F8D46
-        }
-
-		#progressbar li.active:before,
-        #progressbar li.active:after {
-            background: #2F8D46
-        }
-
-		#progressbar .error {
-			color: #e24641
-		}
-
-		#progressbar li.error:before,
-        #progressbar li.error:after {
-			background: #e24641
-		}
-
-        #progressbar li {
-            list-style-type: none;
-            font-size: 15px;
-            width: 50%;
-            float: left;
-            position: relative;
-            font-weight: 400
-        }
-
-        #progressbar #step1:before {
-            content: "1"
-        }
-
-        #progressbar #step2:before {
-            content: "2"
-        }
-
-
-        #progressbar li:before {
-            width: 50px;
-            height: 50px;
-            line-height: 45px;
-            display: block;
-            font-size: 20px;
-            color: #ffffff;
-            background: lightgray;
-            border-radius: 50%;
-            margin: 0 auto 10px auto;
-            padding: 2px
-        }
-
-        #progressbar li:after {
-            content: '';
-            width: 100%;
-            height: 2px;
-            background: lightgray;
-            position: absolute;
-            left: 0;
-            top: 25px;
-            z-index: -1
-        }
-        .bg {
-            position: absolute;
-            z-index: -2;
-            height: 1000px;
-            width: 1000px;
-        }
-        .bg > svg {
-            transform: rotate(89deg);
-        }
-        .window .body {
-            background-color: #f8f9fa!important;
-        }
-        #menu {
-            top: 15px;
-            left: 15px;
-            text-decoration: none;
-        }
-        #menu > .button {
-            cursor: pointer;
-            transition: .3s;
-            background-color: transparent;
-            padding: 5px;
-            width: 35px;
-            height: 35px;
-            display: block;
-            border-radius: 20px;
-        }
-        #menu > .button:hover {
-            background-color: #e3e3e3;
-        }
-        #menu > .button:active {
-            background-color: #c7c6c6;
-        }
-        #menu .list-group-item {
-            border: none !important;
-            text-align: left !important;
-        }
-        #menu .list-group {
-            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-            position: absolute;
-            min-width: 230px;
-        }
-	</style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+	<link href="assets/fontawesome/css/fontawesome.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/brands.css" rel="stylesheet">
+    <link href="assets/fontawesome/css/solid.css" rel="stylesheet">
+    <script src="assets/js/settings.js"></script>
+    <link rel="stylesheet" href="assets/css/fonts.css">
+    <link rel="stylesheet" href="assets/css/mainSettings.css">
 </head>
 <body class="bg-light d-flex justify-content-center">
 
@@ -272,20 +69,31 @@
 			<div class="header bg-white text-center position-relative">
                 <div id="menu" class="position-absolute">
                     <span class="button">
-                        <svg width="20px" height="20px" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
-                            <g fill="gray" fill-rule="evenodd">
-                            <rect x="9.5" y="2.5" width="3" height="3"/>
-                            <rect x="9.5" y="9" width="3" height="3"/>
-                            <rect x="9.5" y="15.5" width="3" height="3"/>
-                            </g>
-                        </svg>
+                        <i class="fa-solid fa-gear"></i>
                     </span>
                     <div class="list-group d-none">
-                        <button type="button" id="removeSDKeys" class="list-group-item list-group-item-action" disabled>Удалить ключи Service Desk</button>
-                        <button type="button" id="startUpdateKeysHH" class="list-group-item list-group-item-action" disabled>Обновить ключи HH</button>
-                        <button type="button" id="startUpdateKeysSJ" class="list-group-item list-group-item-action" disabled>Обновить ключи SuperJob</button>
-                        <button type="button" id="startUpdateKeysAvito" class="list-group-item list-group-item-action" disabled>Обновить ключи Avito</button>
+                        <button type="button" id="removeSDKeys" class="list-group-item list-group-item-action" disabled>
+                            <i class="fa-solid fa-trash"></i>
+                            <span class="ms-1">Удалить ключи Service Desk</span>
+                        </button>
+                        <button type="button" id="startUpdateKeysHH" class="list-group-item list-group-item-action" disabled>
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="ms-1">Обновить ключи HH</span>
+                        </button>
+                        <button type="button" id="startUpdateKeysSJ" class="list-group-item list-group-item-action" disabled>
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="ms-1">Обновить ключи SuperJob</span>
+                        </button>
+                        <button type="button" id="startUpdateKeysAvito" class="list-group-item list-group-item-action" disabled>
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span class="ms-1">Обновить ключи Avito</span>
+                        </button>
                       </div>
+                </div>
+                <div id="reloadData" class="position-absolute">
+                    <span class="button">
+                        <i class="fa-regular fa-rotate-right"></i>
+                    </span>
                 </div>
 				<img class="extensionLogo" alt="Логотип">
 				<h5 class="extensionName"></h5>
@@ -319,14 +127,12 @@
 				</div>
 
                 <div class="connected text-center m-4 d-none">
-					<h5 class="mb-3">Расширение настроенно</h5>
+					<h5 class="mb-3 bold">Расширение настроенно</h5>
 					<p>Логин: <span id="mail" class="fw-bolder">Не указано</span></br>
                     Сотрудник: <span id="name" class="fw-bolder">Не определено</span><br></p>
-                    <p>Статус соединения: <span id="color-state">⌛</span> <span id="state" class="fw-bolder">Попытка соединения</span></p>
+                    <p>Статус соединения: <span id="state" class="fw-bolder">Попытка соединения</span> <span id="color-state"><i class="fa-regular fa-rotate"></i></span> </p>
 					<div class="footer mt-4">
-                        <button id="edit">Изменить данные</button>
-						<button id="closedBtn3">Закрыть страницу</button>
-						<button id="reload2">Обновить данные</button>
+                        <button id="edit"><i class="fa-solid fa-right-from-bracket"></i> Выйти</button>
 					</div>
 				</div>
 
@@ -343,11 +149,15 @@
 			</div>
 		</div>
 
-        <div class="info mt-4 text-center">
-            <p>
+        <div class="info mt-4 text-center">                
+            <p class="mb-0">
                 <span class="extensionName" class="fw-bolder" style="color: #545454;"></span>
                 <span id="extensionVersion" class="blockquote-footer" style="color: #545454;"></span>
             </p>
+            <a class="text-decoration" style="color: #545454" href="https://tracker.vitaexpress.ru/Erilov.NA/extensionhr">
+                <i class="fa-brands fa-square-github"></i>
+                <span class="ms-0">Erilov Niktia</span>
+            </a>
         </div>
 
 	</div>
