@@ -407,7 +407,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             case 'getSDname':
                 debugLogs('Ветка проверки соединения с Service Desk', 'debug')
                 verifServiceDeskTOKEN(updateSettings(), port)
-                getNameEmpl(updateSettings())
+                return getNameEmpl(updateSettings())
             break;
 
             case 'getHHsecrets':

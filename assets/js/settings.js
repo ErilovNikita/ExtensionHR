@@ -1,14 +1,19 @@
 // Порт для общения с беком
 var port = chrome.runtime.connect({ name: "SettingsView" });
 
+// Общих попыток обновления
+var countConnectOnPage = 0
+
 // Переменная с настройками
 let Settings = {}
+
 // Метод для обновления настроек
 function updateSettings() {
     var initSettings = getAllStorageSyncData().then(items => {
         Object.assign(Settings, items);
     });
 }
+
 // Метод для получения всех данных из Chrome.Strorage.Local
 function getAllStorageSyncData() {
     return new Promise((resolve, reject) => {
@@ -20,6 +25,7 @@ function getAllStorageSyncData() {
         });
     });
 }
+
 // Метод для определния работоспособности кнопок
 function enabledButtonsViews() {
 	let buttonIDArray = [
@@ -37,6 +43,41 @@ function enabledButtonsViews() {
 	}
 	if (Settings.ServiceDeskTOKEN) {
 		document.getElementById(buttonIDArray[3]).disabled = false;
+	}
+}
+// Метод для обвления данных
+function updateDataView(countConnect) {
+
+	if (!countConnect) {
+		countConnectOnPage++
+		countConnect = countConnectOnPage
+	} else {
+		countConnect++
+	}
+	port.postMessage("getSDname");
+	if ( Settings.sdName && Settings.sdName != '' ) {
+		document.getElementById('name').innerHTML = Settings.sdName
+		document.getElementById('color-state').innerHTML = '<i class="fa-regular fa-check text-success"></i>'
+		document.getElementById('state').innerHTML = 'Подключено'
+
+		// Get HH Secrets
+		if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
+			port.postMessage("getHHsecrets");
+		}
+		// Get HH Secrets
+		if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
+			port.postMessage("getSJsecrets");
+		}
+		// Get Habr Secrets
+		if (!Settings.Client_id_habr || !Settings.Client_secret_habr || Settings.Client_id_habr == 'undefined' || Settings.Client_secret_habr == 'undefined') {
+			port.postMessage("getHabrsecrets");
+		}
+	} else {
+		if (countConnect > 2) {
+			document.getElementById('name').innerHTML = 'Неизвестно'
+			document.getElementById('color-state').innerHTML = '<i class="fa-solid fa-circle-exclamation text-danger"></i>'
+			document.getElementById('state').innerHTML = 'Не подключено'
+		}
 	}
 }
 
@@ -77,37 +118,6 @@ window.onload = function () {
 		document.getElementById("mail").innerHTML = Settings.serverLogin
 
 		let firstUpdate = true
-		let countConnect = 0
-
-		function updateDataView() {
-			countConnect++
-
-			if ( Settings.sdName && Settings.sdName != '' ) {
-				document.getElementById('name').innerHTML = Settings.sdName
-				document.getElementById('color-state').innerHTML = '🟢'
-				document.getElementById('state').innerHTML = 'Подключено'
-
-				// Get HH Secrets
-				if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
-					port.postMessage("getHHsecrets");
-				}
-				// Get HH Secrets
-				if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
-					port.postMessage("getSJsecrets");
-				}
-				// Get Habr Secrets
-				if (!Settings.Client_id_habr || !Settings.Client_secret_habr || Settings.Client_id_habr == 'undefined' || Settings.Client_secret_habr == 'undefined') {
-					port.postMessage("getHabrsecrets");
-				}
-			} else {
-				if (countConnect > 5) {
-					document.getElementById('name').innerHTML = 'Неизвестно'
-					document.getElementById('color-state').innerHTML = '🔴'
-					document.getElementById('state').innerHTML = 'Не подключено'
-				}
-			}
-			setTimeout(updateDataView, 1000)
-		}
 
 		if (firstUpdate) {
 			firstUpdate = false
@@ -165,24 +175,10 @@ window.onload = function () {
 		window.close()
 	}
 
-	// Кнопка "Закрыть"
-	document.getElementById( "closedBtn3" ).onclick = function(event) {
-		document.getElementById("closedBtn3").disabled = true;
-		setTimeout(function() { document.getElementById("closedBtn3").disabled = false; }, 1000);
-		window.close()
-	}
-
 	// Перезапуск страницы
 	document.getElementById( "reload" ).onclick = function(event) {
 		document.getElementById("reload").disabled = true;
 		setTimeout(function() { document.getElementById("reload").disabled = false; }, 1000);
-		document.location.reload()
-	}
-
-	// Перезапуск страницы
-	document.getElementById( "reload2" ).onclick = function(event) {
-		document.getElementById("reload2").disabled = true;
-		setTimeout(function() { document.getElementById("reload2").disabled = false; }, 1000);
 		document.location.reload()
 	}
 
@@ -212,6 +208,25 @@ window.onload = function () {
 			document.getElementById('menu').getElementsByClassName('list-group')[0].classList.add('d-none')
 		}
 		
+	}
+
+	// reload modal btn
+	document.getElementById('reloadData').getElementsByClassName('button')[0].onclick = function(event) {
+		let iconReloadData = document.getElementById('reloadData').getElementsByClassName('button')[0]
+
+		if (!iconReloadData.disabled) {
+			iconReloadData.disabled = true;
+			iconReloadData.style.WebkitTransitionDuration="1s";
+			iconReloadData.style.webkitTransform = 'rotate(360deg)';
+
+			updateDataView()
+
+			setTimeout(function() { 
+				iconReloadData.style.WebkitTransitionDuration="0s";
+				iconReloadData.style.webkitTransform = 'rotate(0deg)';
+				iconReloadData.disabled = false; 
+			}, 1000)
+		}
 	}
 
 	// startUpdateKeysHH
