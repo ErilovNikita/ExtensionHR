@@ -183,16 +183,16 @@ function createResumeSJ(Settings, resume, port = null) {
                 return payment.toString()
             }
             function education_list(value) { // Список учебных заведений
+                console.log(value)
                 if (value && value !== undefined && value != []) {
                     let education_list = []
-                    for (let index = 0; index < value.length; index++) {
-                        let body = {
+                    for (education of value) {
+                        education_list.push({
                             'metaClass' :'orgResume$education',
-                            'year': value[index].yearend,
-                            'title': value[index].institute.title,
-                            'position': value[index].faculty + ', ' + value[index].profession
-                        };
-                        education_list.push(body)
+                            'year': education.yearend == 0 ? null : education.yearend,
+                            'title': education.institute ? education.institute.title : null,
+                            'position': education.faculty && education.profession ? education.faculty + ', ' + education.profession : null
+                        })
                     }
                     return education_list
                 } else {
@@ -202,21 +202,15 @@ function createResumeSJ(Settings, resume, port = null) {
             function experience_list(value) { // Список прошлых мест работы
                 if (value && value !== undefined && value != []) {
                     let experience_list = []
-                    for (let index = 0; index < value.length; index++) {
-                        let body = {
+                    for (experience of value) {
+                        experience_list.push({
                             'metaClass' :'orgResume$experience',
-                            'title': value[index].name,
-                            'position': value[index].profession,
-                            'responsibiliti': value[index].achievements,
-                            "startWork": value[index].yearbeg + '-' + value[index].monthbeg + '-01',
-                            "finishWork": null,
-                        };
-
-                        if (value[index].yearend && value[index].monthend) {
-                            body["finishWork"] = value[index].yearend + '-' + value[index].monthend + '-01'
-                        }
-
-                        experience_list.push(body)
+                            'title': experience.name,
+                            'position': experience.profession,
+                            'responsibiliti':experience.achievements,
+                            "startWork": experience.yearbeg && experience.monthbeg ? experience.yearbeg + '-' + experience.monthbeg + '-01' : null,
+                            "finishWork": experience.yearend && experience.monthend ? experience.yearend + '-' + experience.monthend + '-01' : null,
+                        })
                     }
                     return experience_list
                 } else {
@@ -226,14 +220,13 @@ function createResumeSJ(Settings, resume, port = null) {
             function additional_list(value) { // Список повышений квалификации, курсов
                 if (value && value !== undefined && value != []) {
                     let additional_list = []
-                    for (let index = 0; index < value.length; index++) {
-                        let body = {
+                    for (additional of value) {
+                        additional_list.push({
                             'metaClass' :'orgResume$additional',
-                            'year': value[index].yearend,
-                            'title': value[index].name,
-                            'company' : value[index].institute
-                        };
-                        additional_list.push(body)
+                            'year': additional.yearend,
+                            'title': additional.name,
+                            'company' : additional.institute
+                        })
                     }
                     return additional_list
                 } else {
