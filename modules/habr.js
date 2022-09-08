@@ -43,8 +43,10 @@ function genHabrToken(port = null) {
             if (data.access_token) {
 
                 // На основе входящих данных получаем дату смерти токена (10 минут жизни)
-                let createdDateTime = new Date(data.created_at )
+                let createdDateTime = new Date(parseInt(data.created_at) * 1000 )
                 let deadLineToken = new Date(createdDateTime.getTime() + 10 * 60000)
+
+                console.log(deadLineToken.getTime().toString())
 
                 // Записываем все данные в память
                 chrome.storage.local.set({
@@ -76,8 +78,7 @@ function habrTOKEN(Settings, port = null) {
             chrome.storage.local.remove([
                 "habr_token",
                 "habr_authorization_code",
-                "habr_token_deadline",
-                "habr_refresh_token"
+                "habr_token_deadline"
             ])
             setTimeout(habrTOKEN, 1500, updateSettings(), port)
         }
@@ -201,19 +202,14 @@ function createResumeHabr(Settings, resume, port = null) {
             function education_list(value) { // Список учебных заведений
                 if (value && value !== undefined && value != []) {
                     let education_list = []
-                    for (let index = 0; index < value.length; index++) {
-                        let position = value[index].faculty_name
-                        if (value[index].description) {
-                            position = position.toString() + ', ' + value[index].description.replace(/<\/?[^>]+>/g,'')
-                        }
-
-                        let body = {
+                    for (education of value) {
+                        education_list.push({
                             'metaClass' :'orgResume$education',
-                            'year': value[index].end_date.split('-')[0],
-                            'title': value[index].university_name,
-                            'position': position
-                        };
-                        education_list.push(body)
+                            'year': education.end_date ? education.end_date.split('-')[0] : null,
+                            'experienceDesc' : education.description ? education.description.replaceAll('<p>', '').replaceAll('</p>', '') : null,
+                            'title': education.university_name,
+                            'position': education.faculty_name
+                        })
                     }
                     return education_list
                 } else {
