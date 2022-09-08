@@ -42,10 +42,11 @@ function genHabrToken(port = null) {
         } else {
             if (data.access_token) {
 
-                //console.log(data.created_at.toString() + ' -> ' + (createdDateTime.getTime() + 10 * 60000).toString() )
                 // На основе входящих данных получаем дату смерти токена (10 минут жизни)
-                let createdDateTime = new Date(data.created_at )
+                let createdDateTime = new Date(parseInt(data.created_at) * 1000 )
                 let deadLineToken = new Date(createdDateTime.getTime() + 10 * 60000)
+
+                console.log(deadLineToken.getTime().toString())
 
                 // Записываем все данные в память
                 chrome.storage.local.set({
@@ -77,8 +78,7 @@ function habrTOKEN(Settings, port = null) {
             chrome.storage.local.remove([
                 "habr_token",
                 "habr_authorization_code",
-                "habr_token_deadline",
-                "habr_refresh_token"
+                "habr_token_deadline"
             ])
             setTimeout(habrTOKEN, 1500, updateSettings(), port)
         }
