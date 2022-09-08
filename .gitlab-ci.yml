@@ -8,6 +8,8 @@ stages:
 
 deployExtension:
   stage: deployExtension
+  tags:
+    - master-pull
   only:
     - main
   script:
