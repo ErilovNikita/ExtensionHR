@@ -54,31 +54,36 @@ function updateDataView(countConnect) {
 	} else {
 		countConnect++
 	}
-	port.postMessage("getSDname");
-	if ( Settings.sdName && Settings.sdName != '' ) {
-		document.getElementById('name').innerHTML = Settings.sdName
-		document.getElementById('color-state').innerHTML = '<i class="fa-regular fa-check text-success"></i>'
-		document.getElementById('state').innerHTML = 'Подключено'
 
-		// Get HH Secrets
-		if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
-			port.postMessage("getHHsecrets");
-		}
-		// Get HH Secrets
-		if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
-			port.postMessage("getSJsecrets");
-		}
-		// Get Habr Secrets
-		if (!Settings.Client_id_habr || !Settings.Client_secret_habr || Settings.Client_id_habr == 'undefined' || Settings.Client_secret_habr == 'undefined') {
-			port.postMessage("getHabrsecrets");
-		}
-	} else {
-		if (countConnect > 2) {
-			document.getElementById('name').innerHTML = 'Неизвестно'
-			document.getElementById('color-state').innerHTML = '<i class="fa-solid fa-circle-exclamation text-danger"></i>'
-			document.getElementById('state').innerHTML = 'Не подключено'
-		}
+	// Get HH Secrets
+	if (!Settings.Client_id_hh || !Settings.Client_secret_hh || Settings.Client_id_hh == 'undefined' || Settings.Client_secret_hh == 'undefined') {
+		port.postMessage("getHHsecrets");
 	}
+	// Get HH Secrets
+	if (!Settings.Client_id_sj || !Settings.Client_secret_sj || Settings.Client_id_sj == 'undefined' || Settings.Client_secret_sj == 'undefined') {
+		port.postMessage("getSJsecrets");
+	}
+	// Get Habr Secrets
+	if (!Settings.Client_id_habr || !Settings.Client_secret_habr || Settings.Client_id_habr == 'undefined' || Settings.Client_secret_habr == 'undefined') {
+		port.postMessage("getHabrsecrets");
+	}
+	// Get SD Name
+	port.postMessage("getSDname");
+
+	updateSettings()
+
+	setTimeout(function() { 
+		if ( Settings.sdName && Settings.sdName != '' ) {
+			document.getElementById('name').innerHTML = Settings.sdName
+			document.getElementById('color-state').innerHTML = '<i class="fa-regular fa-check text-success"></i>'
+			document.getElementById('state').innerHTML = 'Подключено'
+		} else {
+			if (countConnect > 7) {
+				document.getElementById('name').innerHTML = 'Неизвестно'
+				document.getElementById('state').innerHTML = 'Не подключено'
+			}
+		}
+	}, 500);
 }
 
 // Запускаю обновление настроек
@@ -261,5 +266,10 @@ window.onload = function () {
 		chrome.storage.local.remove(['ServiceDeskTOKEN']);
 		updateSettings()
 		document.location.reload()
+	}
+
+	//rotateFullTime
+	if ( document.getElementsByClassName('rotateFullTime').length != 0 ) {
+		rotateFullTime('rotateFullTime')
 	}
 }
