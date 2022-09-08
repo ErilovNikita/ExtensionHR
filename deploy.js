@@ -1,3 +1,6 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 const zipFolder = require('zip-folder');
 const fs = require('fs');
 
