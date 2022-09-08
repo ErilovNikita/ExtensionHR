@@ -1,4 +1,4 @@
-image: node:6.10.3
+image: node:16.16.0-alpine
 
 before_script:
   - yarn
