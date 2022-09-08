@@ -3,7 +3,7 @@ import archiver from 'archiver'
 import fs from 'fs'
 import chrome_webstore_upload from 'chrome-webstore-upload'
 
-let folder = 'dist';
+let folder = './';
 let zipName = 'extension.zip';
 
 const webStore = chrome_webstore_upload({
@@ -14,33 +14,15 @@ const webStore = chrome_webstore_upload({
 });
 
 // zipping the output folder
-zipDirectory(folder, `${folder}/${zipName}`)
-uploadZip()
-// zipFolder(folder, zipName, function (err) {
-//   if (err) {
-//     console.log('oh no!', err);
-//     process.exit(1);
-//   } else {
-//     console.log(`Successfully Zipped ${folder} and saved as ${zipName}`);
-//     uploadZip(); // on successful zipping, call upload 
-//   }
-// });
-
-function zipDirectory(sourceDir, outPath) {
-    const archive = archiver('zip', { zlib: { level: 9 }});
-    const stream = fs.createWriteStream(outPath);
-  
-    return new Promise((resolve, reject) => {
-        archive
-            .directory(sourceDir, false)
-            .on('error', err => reject(err))
-            .pipe(stream)
-        ;
-    
-        stream.on('close', () => resolve());
-        archive.finalize();
-    });
+zipFolder(folder, zipName, function (err) {
+  if (err) {
+    console.log('oh no!', err);
+    process.exit(1);
+  } else {
+    console.log(`Successfully Zipped ${folder} and saved as ${zipName}`);
+    uploadZip(); // on successful zipping, call upload 
   }
+});
 
 function uploadZip() {
   // creating file stream to upload
