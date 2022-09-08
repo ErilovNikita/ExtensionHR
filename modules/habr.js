@@ -206,9 +206,9 @@ function createResumeHabr(Settings, resume, port = null) {
                         education_list.push({
                             'metaClass' :'orgResume$education',
                             'year': education.end_date ? education.end_date.split('-')[0] : null,
-                            'experienceDesc' : education.description ? education.education : null,
+                            'experienceDesc' : education.description ? education.description.replaceAll('<p>', '').replaceAll('</p>', '') : null,
                             'title': education.university_name,
-                            'position': position
+                            'position': education.faculty_name
                         })
                     }
                     return education_list
