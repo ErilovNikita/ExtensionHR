@@ -201,19 +201,14 @@ function createResumeHabr(Settings, resume, port = null) {
             function education_list(value) { // Список учебных заведений
                 if (value && value !== undefined && value != []) {
                     let education_list = []
-                    for (let index = 0; index < value.length; index++) {
-                        let position = value[index].faculty_name
-                        if (value[index].description) {
-                            position = position.toString() + ', ' + value[index].description.replace(/<\/?[^>]+>/g,'')
-                        }
-
-                        let body = {
+                    for (education of value) {
+                        education_list.push({
                             'metaClass' :'orgResume$education',
-                            'year': value[index].end_date.split('-')[0],
-                            'title': value[index].university_name,
+                            'year': education.end_date ? education.end_date.split('-')[0] : null,
+                            'experienceDesc' : education.description ? education.education : null,
+                            'title': education.university_name,
                             'position': position
-                        };
-                        education_list.push(body)
+                        })
                     }
                     return education_list
                 } else {
