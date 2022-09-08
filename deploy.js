@@ -1,8 +1,9 @@
 import zipFolder from 'zip-folder'
+import archiver from 'archiver'
 import fs from 'fs'
 import chrome_webstore_upload from 'chrome-webstore-upload'
 
-let folder = 'dist';
+let folder = './';
 let zipName = 'extension.zip';
 
 const webStore = chrome_webstore_upload({
