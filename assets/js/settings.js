@@ -246,6 +246,18 @@ window.onload = function () {
 		window.open('https://hh.ru/oauth/authorize?response_type=code&client_id=' + Settings.Client_id_hh, '_blank').focus();
 	}
 
+	// startUpdateKeysHabr
+	document.getElementById( "startUpdateKeysHabr" ).onclick = function(event) {
+		document.getElementById("startUpdateKeysHabr").disabled = true;
+		setTimeout(function() { document.getElementById("startUpdateKeysHabr").disabled = false; }, 1000);
+
+		chrome.storage.local.remove(['habr_authorization_code', 'habr_token', 'hh_token_deadline']);
+		updateSettings()
+
+		document.location.reload()
+		window.open('https://hh.ru/oauth/authorize?response_type=code&client_id=' + Settings.Client_id_hh, '_blank').focus();
+	}
+
 	// startUpdateKeysSJ
 	document.getElementById( "startUpdateKeysSJ" ).onclick = function(event) {
 		document.getElementById("startUpdateKeysSJ").disabled = true;

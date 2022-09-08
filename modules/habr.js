@@ -42,6 +42,7 @@ function genHabrToken(port = null) {
         } else {
             if (data.access_token) {
 
+                //console.log(data.created_at.toString() + ' -> ' + (createdDateTime.getTime() + 10 * 60000).toString() )
                 // На основе входящих данных получаем дату смерти токена (10 минут жизни)
                 let createdDateTime = new Date(data.created_at )
                 let deadLineToken = new Date(createdDateTime.getTime() + 10 * 60000)
