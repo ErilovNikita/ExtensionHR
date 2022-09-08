@@ -32,7 +32,8 @@ function enabledButtonsViews() {
 		'startUpdateKeysAvito',
 		'startUpdateKeysHH',
 		'startUpdateKeysSJ',
-		'removeSDKeys'
+		'removeSDKeys',
+		'startUpdateKeysHabr',
 	]
 
 	if (Settings.hh_token || (Settings.Client_secret_hh && Settings.Client_id_hh)) {
@@ -43,6 +44,9 @@ function enabledButtonsViews() {
 	}
 	if (Settings.ServiceDeskTOKEN) {
 		document.getElementById(buttonIDArray[3]).disabled = false;
+	}
+	if (Settings.habr_token || (Settings.Client_secret_habr && Settings.Client_id_habr)) {
+		document.getElementById(buttonIDArray[4]).disabled = false;
 	}
 }
 // Метод для обвления данных
@@ -255,7 +259,8 @@ window.onload = function () {
 		updateSettings()
 
 		document.location.reload()
-		window.open('https://hh.ru/oauth/authorize?response_type=code&client_id=' + Settings.Client_id_hh, '_blank').focus();
+		let redirectURL = encodeURIComponent('https://career.habr.com/companies/vitaexpress')
+		window.open( `https://career.habr.com/integrations/oauth/authorize?client_id=${Settings.Client_id_habr}&redirect_uri=${redirectURL}&response_type=code`, '_blank').focus();
 	}
 
 	// startUpdateKeysSJ
