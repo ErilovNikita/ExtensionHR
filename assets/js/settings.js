@@ -255,7 +255,7 @@ window.onload = function () {
 		document.getElementById("startUpdateKeysHabr").disabled = true;
 		setTimeout(function() { document.getElementById("startUpdateKeysHabr").disabled = false; }, 1000);
 
-		chrome.storage.local.remove(['habr_authorization_code', 'habr_token', 'hh_token_deadline']);
+		chrome.storage.local.remove(['habr_authorization_code', 'habr_token', 'habr_token_deadline']);
 		updateSettings()
 
 		document.location.reload()
