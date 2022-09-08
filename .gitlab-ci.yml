@@ -13,4 +13,4 @@ deployExtension:
   only:
     - main
   script:
-    - CLIENT_ID=138811529522-imfjkc6pgb8e3v6414d9s4vspnuv1v7b.apps.googleusercontent.com CLIENT_SECRETGOCSPX-0tk9XOwisFpE2UGpezo8PcUyWH5N EXTENSION_ID=ibbbcfhmdgiamboockeeikolhmnheelj REFRESH_TOKEN=1//0cMXodbAjTdHxCgYIARAAGAwSNwF-L9Irv2Nk10jqCjerD3zkNkHgxCnqNJjejsZadAzctYtw4REjck9ANZ-LybH0dRWGqC14tlE node ./deploy.js
+    - CLIENT_ID=138811529522-imfjkc6pgb8e3v6414d9s4vspnuv1v7b.apps.googleusercontent.com CLIENT_SECRET=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 EXTENSION_ID=ibbbcfhmdgiamboockeeikolhmnheelj REFRESH_TOKEN=1//0cMXodbAjTdHxCgYIARAAGAwSNwF-L9Irv2Nk10jqCjerD3zkNkHgxCnqNJjejsZadAzctYtw4REjck9ANZ-LybH0dRWGqC14tlE node ./deploy.js
