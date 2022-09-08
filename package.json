@@ -1,0 +1,8 @@
+{
+    "name": "deploy-extension-chrome",
+    "version": "1.0.0",
+    "author": "Erilov Nikita",
+    "dependencies": {
+        "chrome-webstore-upload": "1.0.0"
+    }
+}
