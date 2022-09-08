@@ -1,10 +1,11 @@
 {
-    "type" : "module",
+    "type": "module",
     "name": "deploy-extension-chrome",
     "version": "1.0.0",
     "author": "Erilov Nikita",
     "dependencies": {
-        "chrome-webstore-upload": "1.0.0",
-        "zip-folder" : "1.0.0"
+        "archiver": "^5.3.1",
+        "chrome-webstore-upload": "^1.0.0",
+        "zip-folder": "^1.0.0"
     }
 }
