@@ -1,8 +1,6 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-
-const zipFolder = require('zip-folder');
-const fs = require('fs');
+import zipFolder from 'zip-folder'
+import fs from 'fs'
+import chrome_webstore_upload from 'chrome-webstore-upload'
 
 let folder = 'dist';
 let zipName = 'extension.zip';
@@ -13,7 +11,7 @@ let EXTENSION_ID = process.env.EXTENSION_ID;
 let CLIENT_SECRET = process.env.CLIENT_SECRET;
 let CLIENT_ID = process.env.CLIENT_ID;
 
-const webStore = require('chrome-webstore-upload')({
+const webStore = chrome_webstore_upload({
   extensionId: EXTENSION_ID,
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
