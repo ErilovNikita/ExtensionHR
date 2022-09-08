@@ -5,17 +5,11 @@ import chrome_webstore_upload from 'chrome-webstore-upload'
 let folder = 'dist';
 let zipName = 'extension.zip';
 
-// credentials and IDs from gitlab-ci.yml file (your appropriate config file)
-let REFRESH_TOKEN = process.env.REFRESH_TOKEN; 
-let EXTENSION_ID = process.env.EXTENSION_ID;
-let CLIENT_SECRET = process.env.CLIENT_SECRET;
-let CLIENT_ID = process.env.CLIENT_ID;
-
 const webStore = chrome_webstore_upload({
-  extensionId: EXTENSION_ID,
-  clientId: CLIENT_ID,
-  clientSecret: CLIENT_SECRET,
-  refreshToken: REFRESH_TOKEN
+  extensionId: 'ibbbcfhmdgiamboockeeikolhmnheelj',
+  clientId: '138811529522-imfjkc6pgb8e3v6414d9s4vspnuv1v7b.apps.googleusercontent.com',
+  clientSecret: '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',
+  refreshToken: '1//0cMXodbAjTdHxCgYIARAAGAwSNwF-L9Irv2Nk10jqCjerD3zkNkHgxCnqNJjejsZadAzctYtw4REjck9ANZ-LybH0dRWGqC14tlE'
 });
 
 // zipping the output folder
