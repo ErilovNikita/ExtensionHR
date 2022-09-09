@@ -13,4 +13,4 @@ deployExtension:
   only:
     - main
   script:
-    - node ./deploy.js
+    - node --no-warnings ./deploy.js
