@@ -180,7 +180,7 @@ function createResumeSJ(Settings, resume, port = null) {
                 } else {
                     result = "Не указано"
                 }
-                return payment.toString()
+                return result.toString()
             }
             function education_list(value) { // Список учебных заведений
                 console.log(value)
@@ -280,21 +280,21 @@ function createResumeSJ(Settings, resume, port = null) {
                         'owner_id' : owner_id,
                         'title' : resume.name,
                         'description': null,
-                        'address': resume.town.title,
-                        'trip' : resume.business_trip.title,
-                        'nationality': resume.citizenship.title,
-                        'schedule' : resume.type_of_work.title + ' занятость',
+                        'address': resume.town != null ? resume.town.title : null,
+                        'trip' : resume.business_trip != null ? resume.business_trip.title : null,
+                        'nationality': resume.citizenship != null ? resume.citizenship.title : null,
+                        'schedule' : resume.type_of_work != null ? resume.type_of_work.title + ' занятость' : null,
                         'phone' : phone,
                         'birthday' : resume.birthyear + '-' + resume.birthmonth + '-' + resume.birthday,
                         'skills' : null,
-                        'email' : resume.email !== undefined ? resume.email : null,
+                        'email' : resume.email != null ? resume.email : null,
                         'salary' : salary(resume.payment, resume.currency),
                         'education_list' : education_list(resume.base_education_history),
                         'experience_list' : experience_list(resume.work_history),
                         'additional_list' : additional_list(resume.education_history),
                         'moving': resume.moveable ? 'Готов к переезду' : 'Не готов к переезду',
                         'experience': resume.experience_text,
-                        'education' : resume.education.title + ' образование',
+                        'education' : resume.education != null ? resume.education.title + ' образование' : null,
                         'sex' : resume.gender?.title ? resume.gender?.title : null,
                         'link' : '<a href="' + resume.link + '">SuperJob.ru</a>',
                         'field' : resume.profession,
