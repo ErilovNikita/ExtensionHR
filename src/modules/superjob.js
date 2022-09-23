@@ -1,17 +1,20 @@
 // Метод возвращает свежий токен SJ
-function sjTOKEN(Settings, port = null) {
+function sjTOKEN(port = null) {
+
+    let updSettings = updateSettings()
+
     debugLogs('Проверка токена SuperJob', 'debug')
-    if (Settings.sj_token && Settings.sj_token != '' & Settings.sj_token !== undefined) {
-        if ( new Date() < new Date(Settings.sj_token_deadline) ) {
+    if (updSettings.sj_token && updSettings.sj_token != '' & updSettings.sj_token !== undefined) {
+        if ( new Date() < new Date(updSettings.sj_token_deadline) ) {
             debugLogs('Найден активированный токен SuperJob', 'debug')
-            return Settings.sj_token
+            return updSettings.sj_token
         } else {
             debugLogs('Найден токен SuperJob с истекшим сроком давности, жду 1000мс и повоторяю попытку', 'debug')
             chrome.storage.local.remove([
                 "sj_token",
                 "sj_token_deadline",
             ])
-            setTimeout(sjTOKEN, 1000, updateSettings(), port)
+            setTimeout(sjTOKEN, 1000, port)
         }
     } else {
         debugLogs('Токен SuperJob не найден, проверка ключей для создания', 'debug')
@@ -99,19 +102,22 @@ function getAuthCodeSJ(Settings, notValid = false) {
 }
 
 // Метод для получения резюме
-async function getResumeOnSJpage(Settings, resumeID, port = null) {
+async function getResumeOnSJpage(resumeID, port = null) {
+
+    // Обновляем и получаем хранилише настроек
+    let updSettings = updateSettings()
     // Обьявляем переменную для хранения резюме
     let resume = null
 
-    if (Settings.sj_token && Settings.sj_token != '' && Settings.sj_token !== undefined) {
-        let sj_token = Settings.sj_token
+    if (updSettings.sj_token && updSettings.sj_token != '' && updSettings.sj_token !== undefined) {
+        let sj_token = updSettings.sj_token
         debugLogs('Токен SuperJob.ru - На месте', 'debug', port)
 
         let response = await fetch(`https://api.superjob.ru/2.0/resumes/${resumeID}`, { 
             method: "GET",
             headers: {
                 "Authorization"     : `Bearer ${sj_token}`,
-                "X-Api-App-Id"      : Settings.Client_secret_sj
+                "X-Api-App-Id"      : updSettings.Client_secret_sj
             }
         })
 
@@ -126,7 +132,7 @@ async function getResumeOnSJpage(Settings, resumeID, port = null) {
                     "sj_token",
                     "sj_token_deadline"
                 ])
-                updateSettings()
+                updSettings = updateSettings()
                 let redirectURL = encodeURIComponent('https://zima.superjob.ru/clients/apteki-vita-2210879.html')
                 chrome.tabs.create({url: `https://www.superjob.ru/authorize?client_id=${sjClientID}&redirect_uri=${redirectURL}`, selected: true})
             }  else {
@@ -138,11 +144,11 @@ async function getResumeOnSJpage(Settings, resumeID, port = null) {
         }
         
         // Формируем резюме
-        createResumeSJ(Settings, resume, port)
+        createResumeSJ(updSettings, resume, port)
   
     } else {
         debugLogs('Токен SuperJob не найден, ожидание sjTOKEN() 1500мс...', 'warn')
-        setTimeout(getResumeOnSJpage, 1500, updateSettings(), resumeID, port)
+        setTimeout(getResumeOnSJpage, 1500, resumeID, port)
     }
 }
 

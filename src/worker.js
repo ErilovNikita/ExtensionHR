@@ -232,8 +232,8 @@ function processingSJ(Settings, resumeURL, port = null) {
         
     if (Settings.Client_id_sj && Settings.Client_secret_sj && Settings.ServiceDeskTOKEN) {
         // Запускаем верификацию токена SJ
-        sjTOKEN(Settings, port)
-        setTimeout(getResumeOnSJpage, 1000, Settings, resumeID, port)
+        sjTOKEN(port)
+        setTimeout(getResumeOnSJpage, 1000, resumeID, port)
     }
 }
 
