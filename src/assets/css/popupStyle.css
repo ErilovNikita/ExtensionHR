@@ -22,6 +22,9 @@ body {
 }
 * {
     font-family: Roboto, HelveticaNeue, Arial, sans-serif;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;  
 }
 img.loader {
     width: 150px;
