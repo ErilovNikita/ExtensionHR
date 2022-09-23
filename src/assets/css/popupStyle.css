@@ -22,6 +22,9 @@ body {
 }
 * {
     font-family: Roboto, HelveticaNeue, Arial, sans-serif;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;  
 }
 img.loader {
     width: 150px;
@@ -30,4 +33,9 @@ img.loader {
 p.desc {
     margin-top: -12px;
     font-size: 12px;
+}
+#version {
+    display: inline-block;
+    color: #999;
+    margin-left: 15px;
 }

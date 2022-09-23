@@ -4,6 +4,7 @@ var port = chrome.runtime.connect({ name: "mainPopup" });
 // Получаем обьект манифеста и заполяем данные
 let manifest = chrome.runtime.getManifest();
 document.getElementById('name').innerHTML = manifest.name
+document.getElementById('version').innerHTML = manifest.version
 
 // Обработчик входящмх запросов
 port.onMessage.addListener(function(msg) {
