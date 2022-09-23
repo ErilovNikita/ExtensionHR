@@ -31,3 +31,8 @@ p.desc {
     margin-top: -12px;
     font-size: 12px;
 }
+#version {
+    display: inline-block;
+    color: #999;
+    margin-left: 15px;
+}
