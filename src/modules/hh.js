@@ -116,7 +116,8 @@ async function getResumeOnHHpage(Settings, resumeID, port = null) {
         })
 
         if ( response.status == 403 ) {
-            resp = JSON.parse(data.response)
+            //resp = JSON.parse(data.response)
+            resp = await response.json()
         
             // Обработка ошибки token_revoked
             if (resp.errors[0].type == 'oauth' && resp.errors[0].value == 'token_revoked') {
@@ -128,16 +129,18 @@ async function getResumeOnHHpage(Settings, resumeID, port = null) {
                 ])
                 updateSettings()
                 chrome.tabs.create({url: `https://hh.ru/oauth/authorize?response_type=code&client_id=${hhClientID}`, selected: true})
-            }  else {
+            } else if (resp.errors[0].type == 'api_access_payment') { 
+                debugLogs(`<b>При обращении к HH, возникла ошибка!</b></br><em>Отсутствует оплаченный доступ</em><br>Обратитесь к сташему менеджеру для решения проблемы`, 'error', port)
+            } else {
                 debugLogs(`<b>При обращении к HH, возникла неизвестная ошибка! <br><em>${resp.errors[0].type}: </b>${resp.errors[0].value}</em><br>Обратитесь в Сервис Деск, для решения`, 'error', port)
             }
         } else {
             resume = await response.json();
             debugLogs(resume, 'JSON')
+
+            // Формируем резюме
+            createResumeHH(Settings, resume, port)
         }
-        
-        // Формируем резюме
-        createResumeHH(Settings, resume, port)
   
     } else {
         debugLogs('Токен HH не найден, ожидание hhTOKEN() 1500мс...', 'warn')
