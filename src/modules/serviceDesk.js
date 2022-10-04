@@ -321,6 +321,76 @@ function sendResume(Settings, resumeObject, port = null) {
     }
 }
 
+// Метод для отправки резюме в Сервис Деск основанный на базе hrAPI
+function sendResumeAPI(Settings, resumeObject, port = null) {
+    debugLogs('Резюме сформировано для отправки в Service Desk', 'debug', port)
+    debugLogs(resumeObject, 'JSON');
+  
+    debugLogs('Выгружаю данные в ServiceDesk', 'debug', port)
+
+    if (Settings.ServiceDeskTOKEN &&
+        Settings.ServiceDeskTOKEN !== undefined &&
+        Settings.ServiceDeskTOKEN.indexOf('<!DOCTYPE html>') == -1
+    ) {
+        debugLogs('Отправка резюме в Serivce Desk', 'debug', port)
+        
+        let url = `https://${Settings.serverURL}/sd/services/rest/exec-post?accessKey=${Settings.ServiceDeskTOKEN}&func=modules.hrAPI.initResume&params=requestContent`
+
+        fetch(url, { 
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(resumeObject)
+        })
+        .then((response) => response.text())
+        .then((data) => {
+            stopTimer = true
+            let resumeLink = null
+
+            if (data.indexOf('resume') != -1) {
+                switch (JSON.parse(data).type) {
+                    case 'updated':
+                        debugLogs('Данный кандидат уже есть в базе Service Desk, его данные успешно обновлены', 'debug')
+                        resumeLink = JSON.parse(data).UUID
+                    break;
+    
+                    case 'created':
+                        debugLogs(`Кандидат ${resumeObject.title} успешно создан: ${JSON.parse(data).UUID}`, 'debug')
+                        resumeLink = JSON.parse(data).UUID
+                        try {
+                            resumeSended(updateSettings())
+                        } catch (e) {
+                            debugLogs(`Ошибка при выполнении resumeSended() - ${e}`, 'error')
+                        }
+                    break;
+    
+                    case 'error':
+                        debugLogs(JSON.parse(data).description, 'error', port)
+                    break;
+                }
+            } else {
+                if (data.indexOf('Переход не может быть выполнен: Время жизни ключа авторизации') != -1) {
+                    return verifServiceDeskTOKEN(updateSettings(), port)
+                } else {
+                    debugLogs('Кандидат не создан. Повторите попытку чуть позже. Ошибка SD: ' + data, 'error', port)
+                }
+            }
+            updateStateOnSD(Settings)
+            if ( resumeLink ) {
+                chrome.tabs.create({url: `https://${Settings.serverURL}/sd/operator/#uuid:${resumeLink}`, selected: true})
+            }
+        })  
+    } else {
+        if (Settings.ServiceDeskTOKEN === undefined || !Settings.ServiceDeskTOKEN) {
+            debugLogs('Ключа не обнаружено, выполняю обновление', 'debug', port)
+            return verifServiceDeskTOKEN(updateSettings(), port)
+        }
+        port.postMessage({'alert': 'Возникли проблемы при авторизации с Service Desk. Войдите в свой аккаунт, затем можете закрыть вкладку'})
+    }
+}
+
 // Метод для проверки резюме по собственной базе
 function findApplicantByID(Settings, id, callback) {
     debugLogs('Запрашиваю данные о соискателе в собственной базе...', 'debug')
