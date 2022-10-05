@@ -1,6 +1,6 @@
 {
 	"manifest_version": 3,
-	"name": "vitaHR Модуль",
+	"name": "ExtensionHR",
 	"version": "7.4.1",
 	"description": "Магическая кнопка, которая упростит вашу работу",
 
@@ -31,7 +31,7 @@
 			"48": "pict/logo_48.png",
 			"128": "pict/logo.png"
 		},
-		"default_title": "Импорт резюме в Service Desk",
+		"default_title": "Импорт резюме в Naumen Service Desk",
 		"default_popup": "popup/load.html"
 	},
 	"content_scripts": [

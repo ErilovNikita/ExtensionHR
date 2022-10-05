@@ -1,20 +1,4 @@
-# vitaHR - Chromium Extension
-
-<p align="left">
-    <a href="https://tracker.vitaexpress.ru/Erilov.NA/extensionhr/-/commits/main">
-        <img alt="pipeline status" src="https://tracker.vitaexpress.ru/Erilov.NA/extensionhr/badges/main/pipeline.svg" />
-    </a>
-    <a href="https://chrome.google.com/webstore/detail/ibbbcfhmdgiamboockeeikolhmnheelj" alt="Release">
-        <img src="https://img.shields.io/chrome-web-store/v/ibbbcfhmdgiamboockeeikolhmnheelj?color=success&label=%D0%A0%D0%B5%D0%BB%D0%B8%D0%B7%D0%BD%D0%B0%D1%8F%20%D0%B2%D0%B5%D1%80%D1%81%D0%B8%D1%8F%20" />
-    </a>
-    <a href="https://chrome.google.com/webstore/detail/ibbbcfhmdgiamboockeeikolhmnheelj" alt="Downloads">
-        <img src="https://img.shields.io/chrome-web-store/users/ibbbcfhmdgiamboockeeikolhmnheelj?color=blue&label=%D0%97%D0%B0%D0%B3%D1%80%D1%83%D0%B7%D0%BE%D0%BA" />
-    </a>
-    <a href="https://chrome.google.com/webstore/detail/ibbbcfhmdgiamboockeeikolhmnheelj" alt="rating">
-        <img src="https://img.shields.io/chrome-web-store/rating/ibbbcfhmdgiamboockeeikolhmnheelj?label=%D0%A0%D0%B5%D0%B9%D1%82%D0%B8%D0%BD%D0%B3" />
-    </a>
-</p>
-
+# ExtensionHR - Chromium Extension
 ![sd](doc/header.png)
 
 
@@ -44,7 +28,7 @@
 Для удобства пользования, документация разделена на отдельные блоки, внутри которых есть свое оглавление и описание каждого из пунктов
 * [Установка и первичная настройка расширения](/doc/install/install.md)
   * [Установка в ручном режиме](/doc/install/install.md#manual)
-  * [Установка в автоматическом режиме](/doc/install/install.md#auto)
+  * [<s>Установка в автоматическом режиме</s>]() *(Не доступна при частном использовании)*
   * [Настройка расширения](/doc/install/install.md#settings)
 
 <a name="resources"></a>
@@ -55,6 +39,7 @@
 - [x] Avito
 - [x] SuperJob
 - [x] Хабр Карьера
+- [x] Naumen Service Desk
 
 
 <a name="screenshots"></a>

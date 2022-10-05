@@ -11,11 +11,7 @@ let stopTimer = false
 let Settings = {}
 
 // Заполним дефолтные настройки
-chrome.storage.local.set({
-    "serverURL": 'help.aptekivita.ru',
-    "dotScript": 'doplkioklb',
-    "mailDog": 'cjgfrf'
-});
+chrome.storage.local.set({"serverURL": 'URL_SERVER'});
 
 //Возможные ссылки для резюме
 const arrSite = [
