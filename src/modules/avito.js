@@ -16,8 +16,6 @@ async function genAvitoToken(ClientID, ClientSecret) {
         .then((data) => {
 
             if (!data.error) {
-                console.log(data)
-
                 // На основе входящих данных получаем дату смерти токена 
                 var deadLineToken = new Date()
                 deadLineToken.setSeconds(
@@ -154,101 +152,6 @@ async function createResumeAvito(id, port = null) {
 
     Settings = updateSettings()
 
-    // Рабочий стаж (Строка)
-    function experience(value) {
-        if (value && value != '' && value !== undefined) {
-            return value.toString()
-        } else {
-            return 'Не указан'
-        }
-    }
-    // Готовность к командировкам (Строка)
-    function trip(value) {
-        if (value && value != '' && value !== undefined) {
-            return value
-        } else {
-            return 'Не готов'
-        }
-    }
-    // Переезд (Строка)
-    function moving(value) {
-        if (value && value != '' && value !== undefined) {
-            return value
-        } else {
-            return "Невозможен"
-        }
-    }
-    // Зарплата (Строка)
-    function salary(value) {
-        if (value && value != '' && value !== undefined) {
-            return value.toString()
-        } else {
-            return "Не указано"
-        }
-    }
-    // Телефон (Строка)
-    function phone(value) {
-        if (value && value !== undefined) {
-            for (let index = 0; index < value.length; index++) {
-                if (value[index].type == 'phone') {
-                    let number = value[index].value.replace(/[.,\/#!$%\^&\*;:{}=\-+_`~() ]/g,"")
-                    if (number.substr(0, 1) == '7') {
-                        number = '8' + number.substr(1, number.length)
-                    }
-                    return number
-                }
-            }
-        }
-    }
-    // E-Mail (Строка)
-    function email(value) {
-        if (value && value !== undefined) {
-            for (let index = 0; index < value.length; index++) {
-                if (value[index].type == 'e-mail') {
-                    return value[index].value
-                }
-            }
-        }
-    }
-    // Список учебных заведений
-    function education_list(value) {
-        if (value && value !== undefined) {
-            let education_list = []
-            for (let index = 0; index < value.length; index++) {
-                let body = {
-                    'metaClass' :'orgResume$education',
-                    'year': parseInt(value[index].education_stop),
-                    'title': value[index].institution,
-                    'position': value[index].specialty
-                };
-                education_list.push(body)
-            }
-            return education_list
-        } else {
-            return []
-        }
-    }
-    // Список прошлых мест работы
-    function experience_list(value) {
-        if (value && value !== undefined) {
-            let experience_list = []
-            for (let index = 0; index < value.length; index++) {
-                let body = {
-                    'metaClass' :'orgResume$experience',
-                    'title': value[index].company,
-                    'position': value[index].position,
-                    'responsibiliti': value[index].responsibilities,
-                    "startWork": value[index].work_start,
-                    "finishWork": value[index].work_finish
-                };
-                experience_list.push(body)
-            }
-            return experience_list
-        } else {
-            return []
-        }
-    }
-
     let generalData = await getResumeOnAvitoPage(id)
     let contactData = await getContactsOnAvitoPage(id, port)
 
@@ -256,55 +159,16 @@ async function createResumeAvito(id, port = null) {
     let processingCreatedAvitoResume = new Promise((successResume) => {
         debugLogs('Формирую тело...', 'debug')
 
-        let body = {
-            'metaClass' : 'resume$resume',
-            'title' : contactData.name,
-            'description': generalData.description,
-            'address': generalData.params.address,
-            'trip' : trip(generalData.params.ability_to_business_trip),
-            'nationality': generalData.params.nationality,
-            'schedule' : generalData.params.schedule,
-            'phone' : phone(contactData.contacts),
-            'email' : email(contactData.contacts),
-            'salary' : salary(generalData.salary),
-            'education_list' : education_list(generalData.params.education_list),
-            'experience_list' : experience_list(generalData.params.experience_list),
-            'moving': moving(generalData.params.moving),
-            'experience': experience(generalData.params.experience),
-            'education' : generalData.params.education,
-            'sex' : generalData.params.pol,
-            'link' : '<a href="http://avito.ru' + generalData.url + '">Авито</a>',
-            'field' : generalData.params.business_area,
-            'system_icon' : 'avito',
-            'HR_id' : 'avito_' + id,
-            'owner_id' : new Date().getTime(),
-            'comments' : [],
-            'author' : Settings.serverLogin
-        };
-
-        // Фотография
-        if (generalData.photos && generalData.photos != '' && generalData.photos !== undefined) {
-            toDataURL(generalData.photos[0].url).then(dataUrl => {
-                body.photo = dataUrl
-            })
-        } else {
-            body.photo = []
-        }
-
-        // Возраст
-        if (generalData.params.age && generalData.params.age !== undefined && generalData.params.age != null) {
-            body.age = generalData.params.age
-        }
+        let body = generalData
+        body.type = "avito"
+        body.authorLogin = Settings.serverLogin
+        body.private = contactData
 
         successResume(body);
-
     })
 
     // Отправляю резюме
     processingCreatedAvitoResume.then( resumeBody => {
-        sendResume(Settings, resumeBody, port)
-    });
-    // });
-
-    
+        sendResumeAPI(resumeBody, port)
+    });    
 }
