@@ -258,7 +258,7 @@ function processingHabr(Settings, resumeURL, port = null) {
 }
 
 // Процесс для запуска обработки резюме Avito
-function processingAvito(Settings, resumeURL, port) {
+function processingAvito(resumeURL, port) {
 
     // Находим уникальный ID резюме
     let resumeID = resumeURL.substr(resumeURL.lastIndexOf('_') + 1, resumeURL.length);
@@ -304,7 +304,7 @@ function processingSD(Settings, resumeURL, port) {
         if (data.indexOf('hh.ru') != -1) {
             processingHH(Settings, resumeURL, port)
         } else if (data.indexOf('avito.ru') != -1) {
-            processingAvito(Settings, resumeURL, port)
+            processingAvito(resumeURL, port)
         } else {
             port.postMessage({ "mode" : "close"});
             port.postMessage({ "log" : 'К сожалению, обновление данного резюме - не возможно'})
@@ -370,7 +370,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     } else if ( tabs[0].url.indexOf(arrSite[1][0]) != -1 && tabs[0].url.indexOf(arrSite[1][1]) != -1 ) {  // Avito Resume
 
                         // Запускаем процесс обработки резюме
-                        processingAvito(Settings, tabs[0].url, port)                        
+                        processingAvito(tabs[0].url, port)                        
             
                     } else if (tabs[0].url.indexOf(arrSite[2][0]) != -1 ) { // Обновление резюме из карточки резюме Service Desk
                         if (tabs[0].url.indexOf(arrSite[2][1]) != -1 || tabs[0].url.indexOf(arrSite[2][2]) != -1) {
