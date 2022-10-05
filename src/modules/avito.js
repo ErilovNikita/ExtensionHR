@@ -16,8 +16,6 @@ async function genAvitoToken(ClientID, ClientSecret) {
         .then((data) => {
 
             if (!data.error) {
-                console.log(data)
-
                 // На основе входящих данных получаем дату смерти токена 
                 var deadLineToken = new Date()
                 deadLineToken.setSeconds(

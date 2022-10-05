@@ -156,7 +156,6 @@ function createResumeHH(Settings, resume, port = null) {
             debugLogs('Формирую поля резюме', 'debug', port)
             resume.type = "hh"
             resume.authorLogin = Settings.serverLogin
-            console.log(resume)
             sendResumeAPI(resume, port)
 
         } else {

@@ -46,8 +46,6 @@ function genHabrToken(port = null) {
                 let createdDateTime = new Date(parseInt(data.created_at) * 1000 )
                 let deadLineToken = new Date(createdDateTime.getTime() + 10 * 60000)
 
-                console.log(deadLineToken.getTime().toString())
-
                 // Записываем все данные в память
                 chrome.storage.local.set({
                     "habr_token": data.access_token,

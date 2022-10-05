@@ -329,8 +329,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             "Client_secret_avito": message.Client_secret_avito
         });
         updateSettings()
-        // genAvitoToken(localStorage.Client_id_avito, localStorage.Client_secret_avito)
-        console.log('genAvitoToken')
     } else {
         if (message.hh_authorization_code ) {
             chrome.storage.local.set({"hh_authorization_code": message.hh_authorization_code})

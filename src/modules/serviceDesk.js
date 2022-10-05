@@ -41,7 +41,6 @@ function getNameEmpl() {
         })
         .then((response) => response.text())
         .then((data) => {
-            console.log(bodies);
             if ( data != '' && data.indexOf('<!DOCTYPE html>') == -1 ) {
                 chrome.storage.local.set({"sdName": data});
                 updateSettings()
@@ -138,7 +137,6 @@ function verifServiceDeskTOKEN(port = null, broken = false) {
             })
             .then((response) => response.text())
             .then((data) => {
-                console.log(data);
                 if (
                     data.indexOf('<!DOCTYPE html>') != -1 || 
                     data.indexOf('<Error in script') != -1 
@@ -217,7 +215,6 @@ function resumeSended(auth = false) {
         })
         .then((response) => response.text())
         .then((data) => {
-            console.log(data)
             if (
                 data.indexOf('<!DOCTYPE html>') != -1 || 
                 data.indexOf('<Error in script') != -1 

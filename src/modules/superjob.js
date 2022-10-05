@@ -162,7 +162,6 @@ function createResumeSJ(resume, port = null) {
 
             resume.type = "superjob"
             resume.authorLogin = Settings.serverLogin
-            console.log(resume)
             sendResumeAPI(resume, port)
 
         } else {
