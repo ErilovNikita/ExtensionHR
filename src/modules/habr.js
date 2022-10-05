@@ -170,7 +170,7 @@ function createResumeHabr(Settings, resume, port = null) {
 
             resume.type = "habr"
             resume.authorLogin = Settings.serverLogin
-            sendResumeAPI(Settings, resume, port)
+            sendResumeAPI(resume, port)
 
         } else {
             port.postMessage({'alert': 'Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!'})

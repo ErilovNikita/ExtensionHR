@@ -47,7 +47,7 @@ function genHHToken(port = null) {
                     "hh_refresh_token": data.refresh_token
                 });
             
-                updateTokenHHOnSD(updateSettings())
+                updateTokenHHOnSD()
                 return data.access_token
             } else {
                 debugLogs('При выполнении genHHToken() произошла неизвестная ошибка!' + data.error, 'error')
@@ -157,7 +157,7 @@ function createResumeHH(Settings, resume, port = null) {
             resume.type = "hh"
             resume.authorLogin = Settings.serverLogin
             console.log(resume)
-            sendResumeAPI(Settings, resume, port)
+            sendResumeAPI(resume, port)
 
         } else {
             port.postMessage({'alert': 'Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!'})

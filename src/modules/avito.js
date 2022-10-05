@@ -171,6 +171,6 @@ async function createResumeAvito(id, port = null) {
 
     // Отправляю резюме
     processingCreatedAvitoResume.then( resumeBody => {
-        sendResumeAPI(Settings, resumeBody, port)
+        sendResumeAPI(resumeBody, port)
     });    
 }

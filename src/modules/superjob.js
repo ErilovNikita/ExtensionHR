@@ -144,7 +144,7 @@ async function getResumeOnSJpage(resumeID, port = null) {
         }
         
         // Формируем резюме
-        createResumeSJ(updSettings, resume, port)
+        createResumeSJ(resume, port)
   
     } else {
         debugLogs('Токен SuperJob не найден, ожидание sjTOKEN() 1500мс...', 'warn')
@@ -153,7 +153,8 @@ async function getResumeOnSJpage(resumeID, port = null) {
 }
 
 // Метод для формирования полей резюме
-function createResumeSJ(Settings, resume, port = null) {
+function createResumeSJ(resume, port = null) {
+    let Settings = updateSettings()
     if (resume && resume != '' && resume !== undefined) {
         if (Settings.serverLogin && Settings.serverLogin != '' && Settings.serverLogin !== undefined) {
 
@@ -162,7 +163,7 @@ function createResumeSJ(Settings, resume, port = null) {
             resume.type = "superjob"
             resume.authorLogin = Settings.serverLogin
             console.log(resume)
-            sendResumeAPI(Settings, resume, port)
+            sendResumeAPI(resume, port)
 
         } else {
             port.postMessage({'alert': 'Внимание! Расширение не настроенно! Введите Логин от ServiceDesk для продолжения использования!'})
@@ -172,7 +173,7 @@ function createResumeSJ(Settings, resume, port = null) {
                 debugLogs('Жду логин пользователя в настроках расширения 1500мс...', 'warn')
                 if (Settings.serverLogin != '' && Settings.serverLogin !== undefined) {
                     debugLogs('Пользователь ввел логин, запускаю createResumeSJ()', 'debug')
-                    createResumeSJ(Settings, resume, port)
+                    createResumeSJ(resume, port)
                 } else {
                     setTimeout(checkLogin, 1500)
                 }
@@ -182,6 +183,6 @@ function createResumeSJ(Settings, resume, port = null) {
         }
     } else {
         debugLogs('Ожидание данных 100мс...', 'warn')
-        setTimeout(createResumeSJ, 100, Settings, resume, port)
+        setTimeout(createResumeSJ, 100, resume, port)
     }
 }

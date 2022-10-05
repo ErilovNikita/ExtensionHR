@@ -59,13 +59,10 @@ importScripts('./modules/habr.js');
 
 // Метод запуска
 function __init() {
-    // Обновим настройки
-    let updSettings = updateSettings()
-
     setTimeout(function() {
-        updateStateOnSD(updSettings)
-        getHHsecrets(updSettings)
-        updateTokenHHOnSD(updSettings)
+        updateStateOnSD()
+        getSecrets('hh')
+        updateTokenHHOnSD()
     }, 2000 );
     
     // Циклический запуск через 1 минуту
@@ -199,7 +196,7 @@ function processingHH(Settings, resumeURL, port = null) {
     }
 
     // Запускаем верификацию токена Сервис Деск
-    verifServiceDeskTOKEN(Settings, port)
+    verifServiceDeskTOKEN(port)
 
     // Начинаю отсчет времени
     timeOperation() 
@@ -223,7 +220,7 @@ function processingSJ(Settings, resumeURL, port = null) {
     resumeID = resumeID[resumeID.length - 1]
 
     // Запускаем верификацию токена Сервис Деск
-    verifServiceDeskTOKEN(Settings, port)
+    verifServiceDeskTOKEN(port)
 
     // Начинаю отсчет времени
     timeOperation() 
@@ -245,7 +242,7 @@ function processingHabr(Settings, resumeURL, port = null) {
     resumeID = resumeID[resumeID.length - 1]
 
     // Запускаем верификацию токена Сервис Деск
-    verifServiceDeskTOKEN(Settings, port)
+    verifServiceDeskTOKEN(port)
 
     // Начинаю отсчет времени
     timeOperation() 
@@ -266,7 +263,7 @@ function processingAvito(Settings, resumeURL, port) {
     // Находим уникальный ID резюме
     let resumeID = resumeURL.substr(resumeURL.lastIndexOf('_') + 1, resumeURL.length);
     // Запускаем верификацию токена Сервис Деск
-    verifServiceDeskTOKEN(Settings, port)
+    verifServiceDeskTOKEN(port)
     // Начинаю отсчет времени
     timeOperation() 
 
@@ -292,7 +289,7 @@ function processingSD(Settings, resumeURL, port) {
     if (sUUID.indexOf('!') != -1 ) { sUUID = sUUID.substr(0, sUUID.indexOf('!')) }
     if (sUUID.indexOf('%') != -1 ) { sUUID = sUUID.substr(0, sUUID.indexOf('%')) }
 
-    let url = `https://${Settings.serverURL}/sd/services/rest/exec-post?accessKey=${Settings.ServiceDeskTOKEN}&func=modules.ChromeIntegration.getlinkfromURL&params='${type}','${sUUID}'`
+    let url = `https://${Settings.serverURL}/sd/services/rest/exec-post?accessKey=${Settings.ServiceDeskTOKEN}&func=modules.extensionHR.getlinkfromURL&params='${type}','${sUUID}'`
     fetch(url, {
         method: "POST"
     })
@@ -406,26 +403,26 @@ chrome.runtime.onConnect.addListener(function(port) {
 
             case 'getSDname':
                 debugLogs('Ветка проверки соединения с Service Desk', 'debug')
-                verifServiceDeskTOKEN(updateSettings(), port)
-                return getNameEmpl(updateSettings())
+                verifServiceDeskTOKEN(port)
+                return getNameEmpl()
             break;
 
             case 'getHHsecrets':
                 debugLogs('Ветка получения ключей от HH.ru', 'debug')
-                verifServiceDeskTOKEN(updateSettings())
-                getHHsecrets(updateSettings())
+                verifServiceDeskTOKEN()
+                getSecrets('hh')
             break;
 
             case 'getSJsecrets':
                 debugLogs('Ветка получения ключей от SuperJob.ru', 'debug')
-                verifServiceDeskTOKEN(updateSettings())
-                getSJsecrets(updateSettings())
+                verifServiceDeskTOKEN()
+                getSecrets('sj')
             break;
 
             case 'getHabrsecrets':
                 debugLogs('Ветка получения ключей от Хабр Карьера', 'debug')
-                verifServiceDeskTOKEN(updateSettings())
-                getHabrsecrets(updateSettings())
+                verifServiceDeskTOKEN()
+                getSecrets('habr')
             break;
 
             default:
