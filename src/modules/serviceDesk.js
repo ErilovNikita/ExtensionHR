@@ -1,29 +1,35 @@
 // Метод для получения секретов из Сервис Деска
 function getSecrets(app_name) {
 
-    let updSettings = updateSettings()
+    function repeat(updSettings) {
+        if (updSettings.serverURL) {
+            let url = `https://${updSettings.serverURL}/sd/services/rest/exec-post?func=modules.extensionHR.getSecrets&params=requestContent`
+            let bodies = {
+                "app" : app_name, 
+                "format" : "json"
+            }
 
-    let url = `https://${updSettings.serverURL}/sd/services/rest/exec-post?func=modules.extensionHR.getSecrets&params=requestContent`
-    
-    fetch(url, { 
-        method: "POST",
-        body: {
-            "app" : app_name, 
-            "format" : "json"
+            fetch(url, { 
+                method: "POST",
+                body: JSON.stringify(bodies)
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.client_id) {
+                    let writeData = {}
+                    writeData[`Client_secret_${app_name}`] = data.client_secret
+                    writeData[`Client_id_${app_name}`] = data.client_id
+
+                    chrome.storage.local.set(writeData);
+                    updateSettings()
+                }
+            })
+        } else {
+            setTimeout(repeat, 1500, Settings)
         }
-    })
-    .then((response) => response.text())
-    .then((data) => {
-        if (data.client_id) {
+    }
 
-            let writeData = {}
-            writeData[`Client_secret_${app_name}`] = dataJSON.Client_secret
-            writeData[`Client_id_${app_name}`] = dataJSON.Client_id
-
-            chrome.storage.local.set(writeData);
-            updateSettings()
-        }
-    })
+    repeat(updateSettings())
 }
 
 // Метод для получения ФИО из Сервис Деска
